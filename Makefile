@@ -35,13 +35,13 @@ $(OBJ_PATH)/auxfunc.o: $(SRC_DIR)/auxfunc.c
 
 $(OBJ_PATH)/main.o: $(SRC_DIR)/main.c
 	$(info Compiling main function object file.)
-	@$(CC) $(CFLAGS) -c $(SRC_DIR)/main.c -o $(OBJ_PATH)/main.o -lssl -lcrypto
+	@$(CC) $(CFLAGS) -c $(SRC_DIR)/main.c -o $(OBJ_PATH)/main.o -lssl -lcrypto -lcurl
 
 # Final linking:
 
 final: $(OFILES)
 	$(info Linking and producing executable.)
-	@$(CC) $(CFLAGS) $(OFILES) -o $(OUT_FILE) -lssl -lcrypto
+	@$(CC) $(CFLAGS) $(OFILES) -o $(OUT_FILE) -lssl -lcrypto -lcurl
 
 # Clean:
 
