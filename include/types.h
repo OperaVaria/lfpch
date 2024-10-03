@@ -14,13 +14,14 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 
 // Header files.
 #include <openssl/sha.h>
+#include "macros.h"
 
 typedef struct Password {
-    char data[64];
+    char data[PASSWORD_MAX_LENGTH];
 	unsigned char digest[SHA_DIGEST_LENGTH];
-    char digest_str[SHA_DIGEST_LENGTH*2+1];
-	char prefix[6];
-    char suffix[36];
+    char digest_str[DIGEST_STRING_LENGTH];
+	char prefix[PREFIX_LENGTH];
+    char suffix[SUFFIX_LENGTH];
 	
 } Password;
 
