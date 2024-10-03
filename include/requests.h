@@ -12,7 +12,10 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 #ifndef REQUESTS_H
 #define REQUESTS_H
 
+// Header files.
+#include "types.h"
+
 // Function prototypes.
-int curl_session(char *url);
+int curl_session(char *url, Memory *struct_ptr);
 
 #endif

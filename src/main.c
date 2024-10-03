@@ -19,6 +19,7 @@ see <https://www.gnu.org/licenses/>
 
 // Header files.
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "auxfunc.h"
 #include "hashing.h"
@@ -48,10 +49,13 @@ int main(int argc, char const *argv[]) {
     // Build request url.
     char url[64];
     sprintf(url, "https://api.pwnedpasswords.com/range/%s", p1.prefix);
-    printf("%s\n", url);
+    printf("%s\n", url);    
 
     // Call cURL session function.
-    curl_session(url);    
+    Memory chunk = {0};
+    curl_session(url, &chunk);
+    printf("%s\n", chunk.res_str);    
+    free(chunk.res_str);
 
     return 0;
 }
