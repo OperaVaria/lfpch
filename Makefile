@@ -2,7 +2,7 @@
 
 # Compiler variables.
 CC := gcc
-CFLAGS=-I$(INC_DIR)
+CFLAGS=-Wall -I$(INC_DIR) -L$(LIB_DIR)
 
 # OS dependent variables:
 ifeq ($(OS),Windows_NT)
@@ -20,14 +20,14 @@ else
     endif
 endif
 
-# Libraries.
-LIBS := -lcrypto -lcurl
-
-# Path variables.
+# General path variables.
 INC_DIR := ./include
-#LIB_DIR := ./lib
+LIB_DIR := ./lib
 SRC_DIR := ./src
 OFILES := $(OBJ_PATH)/hashing.o $(OBJ_PATH)/main.o $(OBJ_PATH)/requests.o $(OBJ_PATH)/strop.o
+
+# Libraries.
+LIBS := -lcrypto -lcurl
 
 # Make all.
 all: final
@@ -47,7 +47,7 @@ $(OBJ_PATH)/requests.o: $(SRC_DIR)/requests.c
 	@$(CC) $(CFLAGS) -c $(SRC_DIR)/requests.c -o $(OBJ_PATH)/requests.o
 
 $(OBJ_PATH)/strop.o: $(SRC_DIR)/strop.c
-	$(info Compiling auxiliary functions object file.)
+	$(info Compiling string operation functions object file.)
 	@$(CC) $(CFLAGS) -c $(SRC_DIR)/strop.c -o $(OBJ_PATH)/strop.o
 
 # Final linking:

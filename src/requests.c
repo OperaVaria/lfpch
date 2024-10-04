@@ -45,6 +45,7 @@ int curl_session(const char *url, Memory *struct_ptr) {
     curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 5L);  // Connection timeout of 5 seconds.
     curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);  // Fail if HTTP code >= 400.
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_chunk_cb); // Set callback function.
+    // curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0); // For debugging.
     
     // Perform request + error handling.
     res = curl_easy_perform(curl);
