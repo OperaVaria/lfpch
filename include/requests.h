@@ -16,6 +16,6 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 #include "types.h"
 
 // Function prototypes.
-int curl_session(char *url, Memory *struct_ptr);
+int curl_session(const char *url, Memory *struct_ptr);
 
 #endif

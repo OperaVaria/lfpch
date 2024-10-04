@@ -1,22 +1,49 @@
 /*
 
-auxfunc.c
+strop.c
 
-Auxilary functions.
+String operation functions.
 
 Part of the "Lightning-Fast Password Check" project by OperaVaria.
 
 */
 
 // Header files:
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "auxfunc.h"
+#include "strop.h"
+
+/* Copy a substring to a manually allocated char array.
+The substring is delimited by two pointer passed as arguments.
+Returns pointer to substring. */
+char *copy_substring(const char *start, const char *end) {
+
+    // Error handling for invalid pointers.
+    if (start == NULL || end == NULL || start > end) {
+        return NULL;  
+    }
+
+    // Calculate the length of the substring.
+    size_t length = end - start + 1;
+
+    // Allocate memory for the substring + error handling.
+    char *substring = (char *)malloc((length + 1) * sizeof(char));
+    if (substring == NULL) {
+        return NULL;
+    }
+
+    // Copy the substring.
+    strncpy(substring, start, length);
+
+    // Null-terminate the substring.
+    substring[length] = '\0';
+
+    return substring;
+}
 
 /* Custom fgets-like function: retrieves and stores input from
 a stream to a character array. */
-char *get_input(char *output_str, int arr_length, FILE *input_stream)
+char *get_input(char *output_str, size_t arr_length, FILE *input_stream)
 {
     // Declare variables.
     char ch;

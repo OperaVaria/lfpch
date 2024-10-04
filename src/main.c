@@ -3,7 +3,7 @@
 Lightning-Fast Password Check v1.0.0
 By OperaVaria, 2024
 
-Placeholder for short description
+Placeholder for short description.
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
@@ -21,7 +21,7 @@ see <https://www.gnu.org/licenses/>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "auxfunc.h"
+#include "strop.h"
 #include "hashing.h"
 #include "macros.h"
 #include "requests.h"
@@ -30,32 +30,49 @@ see <https://www.gnu.org/licenses/>
 // Main function.
 int main(int argc, char const *argv[]) {
 
+    /* GET PASSWORD */
+
     // Create Password struct instance.
     Password p1;
 
-    // Get input.
+    // Get password input.
     printf("Enter password: ");
     get_input(p1.data, PASSWORD_MAX_LENGTH, stdin);
-
-    // HASH.
+    
+    /* HASHING */
 
     // Call hashing functions.
-    generate_sha1(&p1);
-    convert_digest(&p1);
-    split_digest_str(&p1);   
-   
-    // REQUEST.    
+    generate_sha1(p1.data, p1.digest);
+    convert_digest(p1.digest, p1.digest_str);
+    split_digest_str(p1.digest_str, p1.prefix, p1.suffix);
+
+    /* REQUEST */
 
     // Build request url.
     char url[64];
-    sprintf(url, "https://api.pwnedpasswords.com/range/%s", p1.prefix);
-    printf("%s\n", url);    
+    sprintf(url, "https://api.pwnedpasswords.com/range/%s", p1.prefix);   
 
     // Call cURL session function.
-    Memory chunk = {0};
-    curl_session(url, &chunk);
-    printf("%s\n", chunk.res_str);    
-    free(chunk.res_str);
+    Memory m1 = {0};
+    curl_session(url, &m1); // TODO: Add error handling 
+
+    //Search for suffix in response string.
+    char *line_ptr = strstr(m1.string, p1.suffix);
+        
+    if (line_ptr != NULL) {
+        // Get number of occurrences. TODO: put in function.
+        char *start_ptr = strchr(line_ptr, ':');
+        char *end_ptr = strchr(line_ptr, '\r');
+        start_ptr++;
+        end_ptr--;
+        p1.pwn_num = copy_substring(start_ptr, end_ptr);
+        printf("Password found %s times!\n", p1.pwn_num);
+    } 
+    else {
+        printf("Password not found!\n");
+    }
+
+    free(m1.string); free(p1.pwn_num);
 
     return 0;
 }

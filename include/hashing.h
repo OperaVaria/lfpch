@@ -12,12 +12,9 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 #ifndef HASHING_H
 #define HASHING_H
 
-// Header files.
-#include "types.h"
-
 // Function prototypes.
-void generate_sha1(Password *struct_ptr);
-void convert_digest(Password *struct_ptr);
-void split_digest_str(Password *struct_ptr);
+void generate_sha1(const char *password, unsigned char *digest);
+void convert_digest(unsigned char *hex_arr, char *output_str);
+void split_digest_str(const char *digest, char *prefix, char *suffix);
 
 #endif

@@ -4,7 +4,6 @@
 CC := gcc
 CFLAGS=-I$(INC_DIR)
 
-
 # OS dependent variables:
 ifeq ($(OS),Windows_NT)
 	OBJ_PATH := ./obj/win
@@ -22,21 +21,18 @@ else
 endif
 
 # Libraries.
-LIBS := -lssl -lcrypto -lcurl
+LIBS := -lcrypto -lcurl
 
 # Path variables.
 INC_DIR := ./include
+#LIB_DIR := ./lib
 SRC_DIR := ./src
-OFILES := $(OBJ_PATH)/auxfunc.o $(OBJ_PATH)/hashing.o $(OBJ_PATH)/main.o $(OBJ_PATH)/requests.o
+OFILES := $(OBJ_PATH)/hashing.o $(OBJ_PATH)/main.o $(OBJ_PATH)/requests.o $(OBJ_PATH)/strop.o
 
 # Make all.
 all: final
 
 # Compiling .o files with messages:
-
-$(OBJ_PATH)/auxfunc.o: $(SRC_DIR)/auxfunc.c
-	$(info Compiling auxiliary functions object file.)
-	@$(CC) $(CFLAGS) -c $(SRC_DIR)/auxfunc.c -o $(OBJ_PATH)/auxfunc.o
 
 $(OBJ_PATH)/hashing.o: $(SRC_DIR)/hashing.c
 	$(info Compiling hashing functions object file.)
@@ -49,6 +45,10 @@ $(OBJ_PATH)/main.o: $(SRC_DIR)/main.c
 $(OBJ_PATH)/requests.o: $(SRC_DIR)/requests.c
 	$(info Compiling request functions object file.)
 	@$(CC) $(CFLAGS) -c $(SRC_DIR)/requests.c -o $(OBJ_PATH)/requests.o
+
+$(OBJ_PATH)/strop.o: $(SRC_DIR)/strop.c
+	$(info Compiling auxiliary functions object file.)
+	@$(CC) $(CFLAGS) -c $(SRC_DIR)/strop.c -o $(OBJ_PATH)/strop.o
 
 # Final linking:
 

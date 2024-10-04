@@ -2,8 +2,7 @@
 
 macros.h
 
-Header file containing global preprocessor constants,
-and macros.
+Header file containing global preprocessor constants and macros.
 
 Part of the "Lightning-Fast Password Check" project by OperaVaria.
 

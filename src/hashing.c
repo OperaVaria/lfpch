@@ -4,10 +4,6 @@ hashing.c
 
 Functions related to password hashing and hash handling.
 
-All functions use a Password stuct instance to retrieve and save data
-that is defined in "types.h".
-
-
 Part of the "Lightning-Fast Password Check" project by OperaVaria.
 
 */
@@ -18,46 +14,42 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 #include <string.h>
 #include <openssl/sha.h>
 #include "hashing.h"
+#include "macros.h"
 
 /* Generates and stores SHA-1 digest from password data.
 Uses the OpenSSL SHA-1 function to create the hash. */
-void generate_sha1(Password *struct_ptr) {
-    size_t length = strlen(struct_ptr->data);
-    SHA1(struct_ptr->data, length, struct_ptr->digest);
+void generate_sha1(const char *password, unsigned char *digest) {
+    size_t length = strlen(password);
+    SHA1(password, length, digest);
 }
 
-// Creates a string form the unsigned char hex array.
-void convert_digest(Password *struct_ptr) {
+/* Creates a string from an unsigned char hex array. Format: two digit,
+capitalized. */
+void convert_digest(unsigned char *hex_arr, char *output_arr) {
     for (int i = 0; i < SHA_DIGEST_LENGTH; i++) {
-        sprintf(struct_ptr->digest_str + i*2, "%02x", struct_ptr->digest[i]);
+        sprintf(output_arr + i*2, "%02X", hex_arr[i]);
     }
-    struct_ptr->digest_str[SHA_DIGEST_LENGTH*2] = '\0';
+    output_arr[SHA_DIGEST_LENGTH*2] = '\0';
 }
 
-/* Splits the digest string into a prefix (first 5 characters) and
-a suffix (remaining) and stores them. All characters are capitalized.
-Implemented with a simple for loop. */
-void split_digest_str(Password *struct_ptr) {
-    for (int j = 0; j < SHA_DIGEST_LENGTH*2; j++) {
-        
-        // Convert letters to upper case.         
-        struct_ptr->digest_str[j] = toupper(struct_ptr->digest_str[j]);
+/* Splits an copies digest string into a prefix (first 5 characters)
+and a suffix (remaining) array. Needed for the haveibeenpwned.com password API. */
+void split_digest_str(const char *digest, char *prefix, char *suffix) {
+    for (int i = 0; i < SHA_DIGEST_LENGTH*2; i++) {
 
         // Add first five characters to prefix array.
-        if (j < 5) {
-            struct_ptr->prefix[j] = struct_ptr->digest_str[j];
+        if (i < 5) {
+            prefix[i] = digest[i];
         }
         
         // Add null terminator to prefix string.
-        else if (j == 5) {
-            struct_ptr->prefix[j] = '\0';
+        else if (i == 5) {
+            prefix[i] = '\0';
         }
         
         // Copy rest to suffix array.
         else {
-            struct_ptr->suffix[j - PREFIX_LENGTH] = struct_ptr->digest_str[j];
+            suffix[i - PREFIX_LENGTH] = digest[i];
         }
     }
 }
-
-
