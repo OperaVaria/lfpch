@@ -73,3 +73,34 @@ char *get_input(char *output_str, size_t arr_length, FILE *input_stream)
 
     return output_str;
 }
+
+/* Function to handle the haveibeenpwned.com response string.
+Takes the response string and a password suffix hash as arguments.
+Returns the number the hash turns up in the database. */
+char *haveibeenpwned_res_hand(const char *response, const char *suffix) {
+
+    // Declare return pointer.
+    char *pwn_num;
+
+    //Search for suffix in response string.
+    char *line_ptr = strstr(response, suffix);	
+        
+    if (line_ptr != NULL) {
+
+        /* If found, set pointers to the start and end
+        of the pwn count number. */ 
+        char *start_ptr = strchr(line_ptr, ':');
+        char *end_ptr = strchr(line_ptr, '\r');
+        start_ptr++;
+        end_ptr--;
+
+        // Call substring copy function.
+        pwn_num = copy_substring(start_ptr, end_ptr);
+    } 
+    else {
+        // Not found: set return variable to null.
+        pwn_num = NULL;
+    }
+
+    return pwn_num;
+}

@@ -15,7 +15,7 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 #include "requests.h"
 
 // Static cURL callback function prototype.
-static size_t write_chunk_cb(char *data, size_t size, size_t nmemb, void *clientp);
+static size_t write_chunk_cb(void *data, size_t size, size_t nmemb, void *clientp);
 
 /* Initiate a cURL session with the "easy" API. Get a response and
 store the data to a dynamically allocated char array. Takes a url string
@@ -31,7 +31,7 @@ int curl_session(const char *url, Memory *struct_ptr) {
     curl = curl_easy_init();
     if (curl == NULL) {
         fprintf(stderr, "HTTP request failed\n");
-        return -1;
+        exit(EXIT_FAILURE);
     }
     
     // Set headers.
@@ -51,9 +51,9 @@ int curl_session(const char *url, Memory *struct_ptr) {
     res = curl_easy_perform(curl);
     if (res != CURLE_OK) {
         fprintf(stderr, "Error: %s\n", curl_easy_strerror(res));
-        return -1;
-    }   
-    
+        exit(EXIT_FAILURE);
+    }
+
     // Close session.
     curl_easy_cleanup(curl);
 
@@ -65,7 +65,7 @@ int curl_session(const char *url, Memory *struct_ptr) {
 
 /* Callback function for cURL to store response data, chunk-by-chunk,
 to dynamically allocated memory. Returns the number of elements (nmemb) received. */
-static size_t write_chunk_cb(char *data, size_t size, size_t nmemb, void *clientp) {
+static size_t write_chunk_cb(void *data, size_t size, size_t nmemb, void *clientp) {
 
     // Initialize variables.
     size_t real_size = size * nmemb;
@@ -74,7 +74,7 @@ static size_t write_chunk_cb(char *data, size_t size, size_t nmemb, void *client
     // Reallocate memory + error handling
     char *ptr = realloc(mem->string, mem->size + real_size + 1);
     if (ptr == NULL) {
-        free(mem->string);
+        // free(mem->string);
         return CURL_WRITEFUNC_ERROR;
     }
 

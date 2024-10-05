@@ -16,16 +16,26 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 #include "hashing.h"
 #include "macros.h"
 
-/* Generates and stores SHA-1 digest from password data.
-Uses the OpenSSL SHA-1 function to create the hash. */
-void generate_sha1(const char *password, unsigned char *digest) {
-    size_t length = strlen(password);
-    SHA1(password, length, digest);
+/* Generates and stores an SHA-1 digest from input data.
+Uses the OpenSSL SHA-1 function (macro). */
+void generate_sha1(const char *data, unsigned char *digest) {
+
+    // Get string length.
+    size_t length = strlen(data);
+
+    // Convert input array to unsigned.
+    unsigned char unsigned_data[length];
+    for (int i = 0; i < length; i++) {
+        unsigned_data[i] = (unsigned char)data[i];
+    }
+    
+    // Hash.
+    SHA1(unsigned_data, length, digest);
 }
 
 /* Creates a string from an unsigned char hex array. Format: two digit,
 capitalized. */
-void convert_digest(unsigned char *hex_arr, char *output_arr) {
+void convert_digest(const unsigned char *hex_arr, char *output_arr) {
     for (int i = 0; i < SHA_DIGEST_LENGTH; i++) {
         sprintf(output_arr + i*2, "%02X", hex_arr[i]);
     }

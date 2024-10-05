@@ -13,6 +13,7 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 #define TYPES_H
 
 // Header files.
+#include <gtk/gtk.h>
 #include <openssl/sha.h>
 #include "macros.h"
 
@@ -30,7 +31,14 @@ typedef struct Password {
     char digest_str[DIGEST_STRING_LENGTH];
     char prefix[PREFIX_LENGTH];
     char suffix[SUFFIX_LENGTH];
-    char *pwn_num;
 } Password;
+
+/* Struct to store GTK widgets.
+Used to pass multiple gpointers to the callback function. */
+typedef struct Widgets {
+    GtkWidget *entry;
+    GtkWidget *button;
+    GtkWidget *label;    
+} Widgets;
 
 #endif
