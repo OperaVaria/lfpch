@@ -1,6 +1,6 @@
 # Lightning-Fast Password Check
 
-A work in progress app to quickly and securely check if a password has been hacked before.
+A work in progress GTK app to quickly and securely check if a password has been hacked before.
 
 Tested on: MX Linux 23.4
 
