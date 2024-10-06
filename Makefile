@@ -6,16 +6,16 @@ CC := gcc
 # OS dependent variables:
 ifeq ($(OS),Windows_NT)
 	OBJ_PATH := ./obj/win
-	OUT_FILE := lfpch.exe
+	EXE := lfpch.exe
 else
 	UNAME_S := $(shell uname -s)
 	ifeq ($(UNAME_S),Linux)
 		OBJ_PATH := ./obj/lnx
-		OUT_FILE := lfpch
+		EXE := lfpch
 	endif
 	ifeq ($(UNAME_S),Darwin)
 		OBJ_PATH := ./obj/mac
-		OUT_FILE := lfpch
+		EXE := lfpch
 	endif
 endif
 
@@ -26,13 +26,13 @@ SRC_DIR := ./src
 OFILES := $(OBJ_PATH)/backend.o $(OBJ_PATH)/gui.o $(OBJ_PATH)/hashing.o $(OBJ_PATH)/main.o $(OBJ_PATH)/requests.o $(OBJ_PATH)/strop.o
 
 # Flags.
-CFLAGS := -Wall -g `pkg-config --cflags gtk4` -I$(INC_DIR) -L$(LIB_DIR)
+CFLAGS := -Wall -g `pkg-config --cflags gtk4` -I$(INC_DIR) -L$(LIB_DIR) # Debug flags on for now.
 LDFLAGS := `pkg-config --libs gtk4` -lcrypto -lcurl
 
 # Make all.
 all: final
 
-# Create object directory if it doesn't exist
+# Create object directory if it doesn't exist.
 $(OBJ_PATH):
 	@mkdir -p $(OBJ_PATH)
 
@@ -66,7 +66,7 @@ $(OBJ_PATH)/strop.o: $(OBJ_PATH) $(SRC_DIR)/strop.c
 
 final: $(OFILES)
 	$(info Linking and producing executable.)
-	@$(CC) $(OFILES) -o $(OUT_FILE) $(LDFLAGS)
+	@$(CC) $(OFILES) -o $(EXE) $(LDFLAGS)
 
 # Clean:
 
@@ -74,11 +74,11 @@ clean:
 	$(info Removing object files.)
 	@$(RM) $(OBJ_PATH)/*.o
 
-bincl:	
+binclean:	
 	$(info Removing binary.)
-	@$(RM) $(OUT_FILE)
+	@$(RM) $(EXE)
 
-allcl: clean bincl
+allclean: clean bincl
 
-# Declare phony targets
+# Declare phony targets.
 .PHONY: all clean bincl allcl
