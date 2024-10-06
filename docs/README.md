@@ -1,10 +1,8 @@
 # Lightning-Fast Password Check
 
-Body
+A work in progress app to quickly and securely check if a password has been hacked before.
 
-## Subtitle
-
-Tested on: Windows 11, Lubuntu 22.04 LTS.
+Tested on: MX Linux 23.4
 
 ---
 

@@ -24,7 +24,7 @@ char *copy_substring(const char *start, const char *end) {
     }
 
     // Calculate the length of the substring.
-    size_t length = end - start + 1;
+    size_t length = end - start;
 
     // Allocate memory for the substring + error handling.
     char *substring = (char *)malloc((length + 1) * sizeof(char));
@@ -39,39 +39,6 @@ char *copy_substring(const char *start, const char *end) {
     substring[length] = '\0';
 
     return substring;
-}
-
-/* Custom fgets-like function: retrieves and stores input from
-a stream to a character array. */
-char *get_input(char *output_str, size_t arr_length, FILE *input_stream)
-{
-    // Declare variables.
-    char ch;
-    int i = 0;
-    int l = arr_length--;
-
-    // Read and store input until newline or endfile character encountered.
-    while ((ch = getc(input_stream)) != '\n' && ch != EOF)
-    {
-        // If arr_length too short: error message, clear input buffer.
-        if (l == i)
-        {
-            fprintf(stderr, "Warning: input too long. String truncated.\n");
-            while ((ch = getchar()) != '\n' && ch != EOF) { }
-            break;
-        }
-        // Else: normal operation (add to array, increment iterator).
-        else
-        {
-            output_str[i] = ch;
-            i++;
-        }
-    }
-
-    // Add null terminator to end of string.
-    output_str[i] = '\0';
-
-    return output_str;
 }
 
 /* Function to handle the haveibeenpwned.com response string.
@@ -90,12 +57,12 @@ char *haveibeenpwned_res_hand(const char *response, const char *suffix) {
         /* If found, set pointers to the start and end
         of the pwn count number. */ 
         char *start_ptr = strchr(line_ptr, ':');
-        char *end_ptr = strchr(line_ptr, '\r');
-        start_ptr++;
-        end_ptr--;
+        char *end_ptr = strchr(line_ptr, '\r');        
+        start_ptr++; // Move pointer over ':'.
 
         // Call substring copy function.
         pwn_num = copy_substring(start_ptr, end_ptr);
+        
     } 
     else {
         // Not found: set return variable to null.

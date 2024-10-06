@@ -25,7 +25,8 @@ char *backend_process(const char *password) {
     Password p1;
 
     // Copy password data to struct.
-    strncpy(p1.data, password, PASSWORD_MAX_LENGTH);
+    strncpy(p1.data, password, PASSWORD_MAX_LENGTH - 1);
+    p1.data[PASSWORD_MAX_LENGTH - 1] = '\0';
     
     /* HASHING */
 
@@ -33,8 +34,6 @@ char *backend_process(const char *password) {
     generate_sha1(p1.data, p1.digest);
     convert_digest(p1.digest, p1.digest_str);
     split_digest_str(p1.digest_str, p1.prefix, p1.suffix);
-    
-    printf("%s\n", p1.suffix);
 
     /* REQUEST */
 
@@ -53,6 +52,7 @@ char *backend_process(const char *password) {
     // Call response handling function to get pwn number.
     char* pwn_num = haveibeenpwned_res_hand(m1.string, p1.suffix);
 
+    // Free response string memory.
     free(m1.string);
 
     return pwn_num;
