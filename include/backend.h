@@ -17,5 +17,6 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 
 // Function prototypes.
 void backend_process(Password *password);
+long int haveibeenpwned_res_hand(const char *response, const char *suffix);
 
 #endif

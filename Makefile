@@ -23,7 +23,7 @@ endif
 INC_DIR := ./include
 LIB_DIR := ./lib
 SRC_DIR := ./src
-OFILES := $(OBJ_PATH)/backend.o $(OBJ_PATH)/gui.o $(OBJ_PATH)/hashing.o $(OBJ_PATH)/main.o $(OBJ_PATH)/request.o $(OBJ_PATH)/strop.o
+OFILES := $(OBJ_PATH)/backend.o $(OBJ_PATH)/gui.o $(OBJ_PATH)/hashing.o $(OBJ_PATH)/main.o $(OBJ_PATH)/request.o
 
 # Flags.
 CFLAGS := -Wall -g `pkg-config --cflags gtk4` -I$(INC_DIR) -L$(LIB_DIR) # Debug flags on for now.
@@ -57,10 +57,6 @@ $(OBJ_PATH)/main.o: $(OBJ_PATH) $(SRC_DIR)/main.c
 $(OBJ_PATH)/request.o: $(OBJ_PATH) $(SRC_DIR)/request.c
 	$(info Compiling the request functions object file.)
 	@$(CC) $(CFLAGS) -c $(SRC_DIR)/request.c -o $(OBJ_PATH)/request.o
-
-$(OBJ_PATH)/strop.o: $(OBJ_PATH) $(SRC_DIR)/strop.c
-	$(info Compiling the string operation functions object file.)
-	@$(CC) $(CFLAGS) -c $(SRC_DIR)/strop.c -o $(OBJ_PATH)/strop.o
 
 # Final linking:
 
