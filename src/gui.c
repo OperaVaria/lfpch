@@ -9,6 +9,7 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 */
 
 // Header files.
+#include <string.h>
 #include <gtk/gtk.h>
 #include "gui.h"
 #include "backend.h"
@@ -60,15 +61,14 @@ void activate(GtkApplication *app, gpointer user_data) {
     gtk_widget_set_margin_end(result_label, 20);
 
     // Allocate memory for Widgets struct.
-    Widgets *w1 = g_new(Widgets, 1);
-    w1->entry = password_entry;
-    w1->button = submit_button;
-    w1->label = result_label;
+    Widgets *widgets = g_new(Widgets, 1);
+    widgets->entry = password_entry;
+    widgets->label = result_label;
 
     // Connect callback functions.
-    g_signal_connect (password_entry, "activate", G_CALLBACK (submit_callback), w1);
-    g_signal_connect(submit_button, "clicked", G_CALLBACK(submit_callback), w1);
-    g_signal_connect(window, "destroy", G_CALLBACK(on_window_destroy), w1);
+    g_signal_connect (password_entry, "activate", G_CALLBACK (submit_callback), widgets);
+    g_signal_connect(submit_button, "clicked", G_CALLBACK(submit_callback), widgets);
+    g_signal_connect(window, "destroy", G_CALLBACK(on_window_destroy), widgets);
 
     gtk_window_present(GTK_WINDOW(window));
 }
@@ -78,15 +78,19 @@ void submit_callback(GtkWidget *button, gpointer data) {
 
     // Declare variables.
     Widgets *widgets_ptr;
-    const char *password;
     char *result_num, result_buffer[256];
 
-    // Cast to the widget struct.
+    // Cast to the Widgets struct.
     widgets_ptr = (Widgets *)data;
 
-    // Get input, and process backend session.
-    password = get_password_from_entry(widgets_ptr);
-    result_num = backend_process(password);
+    /* Create Password struct instance, store password data
+    and size */ 
+    Password password;
+    password.pass_data = gtk_editable_get_text(GTK_EDITABLE(widgets_ptr->entry));
+    password.pass_size = strlen(password.pass_data);
+    
+    // Launch backend process.
+    result_num = backend_process(&password);
 
     // Create label string based on the result.
     if (result_num != NULL) {
@@ -99,20 +103,11 @@ void submit_callback(GtkWidget *button, gpointer data) {
     free(result_num);
 
     // Update label.
-    update_result_label(widgets_ptr, result_buffer);
+    gtk_label_set_text(GTK_LABEL(widgets_ptr->label), result_buffer);
 }
 
 // Callback function on window destroy: free memory allocated for widgets.
 void on_window_destroy(GtkWidget *widget, gpointer data) {
     Widgets *widgets_ptr = (Widgets *)data;
     g_free(widgets_ptr);
-}
-
-// Helper functions.
-const char *get_password_from_entry(Widgets *widgets_ptr) {
-    return gtk_editable_get_text(GTK_EDITABLE(widgets_ptr->entry));
-}
-
-void update_result_label(Widgets *widgets, const char *text) {
-    gtk_label_set_text(GTK_LABEL(widgets->label), text);
 }

@@ -18,42 +18,36 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 #include "request.h"
 #include "types.h"
 
-// A process of backend function calls.
-char *backend_process(const char *password) {
-    
-    // Create Password struct instance.
-    Password p1;
-
-    // Copy password data to struct.
-    strncpy(p1.data, password, PASSWORD_MAX_LENGTH - 1);
-    p1.data[PASSWORD_MAX_LENGTH - 1] = '\0';
-    
+/* Processes backend function calls. Takes a Password struct instance as argument.
+Returns the number the password has been in a data breach, or NULL if not found. */ 
+char *backend_process(Password *password_ptr) {   
+        
     /* HASHING */
 
     // Call hashing functions.
-    generate_sha1(p1.data, p1.digest);
-    convert_digest(p1.digest, p1.digest_str);
-    split_digest_str(p1.digest_str, p1.prefix, p1.suffix);
+    generate_sha1(password_ptr->pass_data, password_ptr->digest);
+    convert_digest(password_ptr->digest, password_ptr->digest_str);
+    split_digest_str(password_ptr->digest_str, password_ptr->prefix, password_ptr->suffix);
 
     /* REQUEST */
 
     // Build request url.
     char url[64];
-    sprintf(url, "https://api.pwnedpasswords.com/range/%s", p1.prefix);
+    sprintf(url, "https://api.pwnedpasswords.com/range/%s", password_ptr->prefix);
 
-    // Create Memory instance to store response chunks.
-    Memory m1;
-    m1.string = malloc(1);
-    m1.size = 0;
+    // Create Memory struct instance to store response chunks.
+    Memory memory;
+    memory.string = malloc(1);
+    memory.size = 0;
 
     // Call cURL session function.
-    curl_session(url, &m1);
+    curl_session(url, &memory);
 
     // Call response handling function to get pwn number.
-    char* pwn_num = haveibeenpwned_res_hand(m1.string, p1.suffix);
+    char *pwn_num = haveibeenpwned_res_hand(memory.string, password_ptr->suffix);
 
     // Free response string memory.
-    free(m1.string);
+    free(memory.string);
 
     return pwn_num;
 }

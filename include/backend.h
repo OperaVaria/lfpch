@@ -12,7 +12,10 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 #ifndef BACKEND_H
 #define BACKEND_H
 
+// Header files.
+#include "types.h"
+
 // Function prototypes.
-char *backend_process(const char *password);
+char *backend_process(Password *password);
 
 #endif

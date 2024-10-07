@@ -21,7 +21,7 @@ static size_t write_chunk_cb(void *data, size_t size, size_t nmemb, void *client
 /* Initiate a cURL session with the "easy" API. Get a response and
 store the data to a dynamically allocated char array. Takes a url string
 and a Memory struct as argument. Returns status code.*/
-int curl_session(const char *url, Memory *struct_ptr) {
+int curl_session(const char *url, Memory *memory_ptr) {
 
     // Declare cURL variables.
     CURL *curl;
@@ -41,7 +41,7 @@ int curl_session(const char *url, Memory *struct_ptr) {
     // Session options.
     curl_easy_setopt(curl, CURLOPT_URL, url); // Pass URL.
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers); // Pass headers.  
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)struct_ptr); // Pass chunks to cb function.
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)memory_ptr); // Pass chunks to cb function.
     curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);  // Set timeout of 10 seconds.
     curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 5L);  // Connection timeout of 5 seconds.
     curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);  // Fail if HTTP code >= 400.
@@ -79,7 +79,7 @@ static size_t write_chunk_cb(void *data, size_t size, size_t nmemb, void *client
         return CURL_WRITEFUNC_ERROR;
     }
 
-    // Update Memory instance.
+    // Update Memory struct instance.
     mem->string = ptr;
     memcpy(&(mem->string[mem->size]), data, real_size);
     mem->size += real_size;
