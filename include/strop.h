@@ -17,7 +17,6 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 
 // Function prototypes.
 char *copy_substring(const char *start, const char *end);
-char *get_input(char *output_str, size_t arr_length, FILE *input_stream);
 char *haveibeenpwned_res_hand(const char *response, const char *suffix);
 
 #endif

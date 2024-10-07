@@ -1,6 +1,6 @@
 /*
 
-requests.c
+request.c
 
 Functions related to HTTP requests.
 
@@ -12,7 +12,8 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 #include <stdlib.h>
 #include <string.h>
 #include <curl/curl.h>
-#include "requests.h"
+#include "request.h"
+#include "types.h"
 
 // Static cURL callback function prototype.
 static size_t write_chunk_cb(void *data, size_t size, size_t nmemb, void *clientp);
@@ -74,7 +75,7 @@ static size_t write_chunk_cb(void *data, size_t size, size_t nmemb, void *client
     // Reallocate memory + error handling
     char *ptr = realloc(mem->string, mem->size + real_size + 1);
     if (ptr == NULL) {
-        // free(mem->string);
+        free(mem->string);
         return CURL_WRITEFUNC_ERROR;
     }
 

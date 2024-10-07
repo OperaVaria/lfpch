@@ -1,9 +1,9 @@
 /*
 
-Lightning-Fast Password Check v1.0.0
+Lightning-Fast Password Check v0.0.0
 By OperaVaria, 2024
 
-Placeholder for short description.
+A work in progress GTK app to quickly and securely check if a password has been hacked before.
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later

@@ -1,16 +1,16 @@
 /*
 
-requests.h
+request.h
 
-Header file for requests.c.
+Header file for request.c.
 
 Part of the "Lightning-Fast Password Check" project by OperaVaria.
 
 */
 
 // Guard.
-#ifndef REQUESTS_H
-#define REQUESTS_H
+#ifndef REQUEST_H
+#define REQUEST_H
 
 // Header files.
 #include "types.h"

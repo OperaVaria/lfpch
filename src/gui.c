@@ -9,12 +9,14 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 */
 
 // Header files.
+#include <gtk/gtk.h>
 #include "gui.h"
 #include "backend.h"
 #include "types.h"
 
 // Set up GUI structure.
 void activate(GtkApplication *app, gpointer user_data) {
+
     // Declare widget variables.
     GtkWidget *window, *vbox, *instruction_label, *password_entry, *submit_button, *result_label;
 
@@ -27,7 +29,7 @@ void activate(GtkApplication *app, gpointer user_data) {
     vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     gtk_window_set_child(GTK_WINDOW(window), vbox);
 
-    // Create an instruction label. 
+    // Create an instruction label.
     instruction_label = gtk_label_new("Enter your password:");
     gtk_box_append(GTK_BOX(vbox), instruction_label);
     gtk_widget_set_margin_top(instruction_label, 20);
@@ -35,15 +37,15 @@ void activate(GtkApplication *app, gpointer user_data) {
     gtk_widget_set_margin_end(instruction_label, 10);
 
     // Create password entry field.
-    password_entry = gtk_password_entry_new();
+    password_entry = gtk_password_entry_new();    
+    gtk_password_entry_set_show_peek_icon(GTK_PASSWORD_ENTRY(password_entry), true);
     gtk_box_append(GTK_BOX(vbox), password_entry);
-    gtk_password_entry_set_show_peek_icon(GTK_PASSWORD_ENTRY(password_entry), true);    
     gtk_widget_set_margin_top(password_entry, 10);
     gtk_widget_set_margin_start(password_entry, 20);
     gtk_widget_set_margin_end(password_entry, 20);
 
     // Create "submit" button.
-    submit_button = gtk_button_new_with_label("Check Password");    
+    submit_button = gtk_button_new_with_label("Check Password");
     gtk_box_append(GTK_BOX(vbox), submit_button);
     gtk_widget_set_margin_top(submit_button, 10);
     gtk_widget_set_margin_start(submit_button, 20);
@@ -67,7 +69,7 @@ void activate(GtkApplication *app, gpointer user_data) {
     g_signal_connect (password_entry, "activate", G_CALLBACK (submit_callback), w1);
     g_signal_connect(submit_button, "clicked", G_CALLBACK(submit_callback), w1);
     g_signal_connect(window, "destroy", G_CALLBACK(on_window_destroy), w1);
-        
+
     gtk_window_present(GTK_WINDOW(window));
 }
 

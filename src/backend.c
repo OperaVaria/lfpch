@@ -15,7 +15,7 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 #include "strop.h"
 #include "hashing.h"
 #include "macros.h"
-#include "requests.h"
+#include "request.h"
 #include "types.h"
 
 // A process of backend function calls.

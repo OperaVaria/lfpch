@@ -9,18 +9,20 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 */
 
 // Header files:
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "strop.h"
 
 /* Copy a substring to a manually allocated char array.
-The substring is delimited by two pointer passed as arguments.
-Returns pointer to substring. */
+The substring is delimited by two pointers passed as arguments.
+Returns pointer to substring, error returns NULL value.
+Memory must be freed! */
 char *copy_substring(const char *start, const char *end) {
 
     // Error handling for invalid pointers.
     if (start == NULL || end == NULL || start > end) {
-        return NULL;  
+        return NULL;
     }
 
     // Calculate the length of the substring.
@@ -42,28 +44,29 @@ char *copy_substring(const char *start, const char *end) {
 }
 
 /* Function to handle the haveibeenpwned.com response string.
-Takes the response string and a password suffix hash as arguments.
-Returns the number the hash turns up in the database. */
+Takes the response string and a password hash suffix as arguments.
+Returns the number the password has been in a data breach,
+or NULL if not found. */
 char *haveibeenpwned_res_hand(const char *response, const char *suffix) {
 
     // Declare return pointer.
     char *pwn_num;
 
     //Search for suffix in response string.
-    char *line_ptr = strstr(response, suffix);	
-        
+    char *line_ptr = strstr(response, suffix);
+
     if (line_ptr != NULL) {
 
         /* If found, set pointers to the start and end
-        of the pwn count number. */ 
+        of the pwn number. */
         char *start_ptr = strchr(line_ptr, ':');
-        char *end_ptr = strchr(line_ptr, '\r');        
+        char *end_ptr = strchr(line_ptr, '\r');
         start_ptr++; // Move pointer over ':'.
 
         // Call substring copy function.
         pwn_num = copy_substring(start_ptr, end_ptr);
-        
-    } 
+
+    }
     else {
         // Not found: set return variable to null.
         pwn_num = NULL;
