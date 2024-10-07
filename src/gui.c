@@ -104,7 +104,7 @@ void submit_callback(GtkWidget *button, gpointer data) {
 
         // Create label string based on the result.
         if (password.pwn_num != 0) {
-            snprintf(result_buffer, sizeof(result_buffer), "This password has been hacked %ld times\nbefore!", password.pwn_num);
+            snprintf(result_buffer, sizeof(result_buffer), "This password has been hacked %'ld times\nbefore!", password.pwn_num);
         } else {
             snprintf(result_buffer, sizeof(result_buffer), "Password not found.");
         }
