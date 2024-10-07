@@ -16,6 +16,6 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 #include "types.h"
 
 // Function prototypes.
-char *backend_process(Password *password);
+void backend_process(Password *password);
 
 #endif

@@ -32,6 +32,7 @@ typedef struct Password {
     char digest_str[DIGEST_STRING_LENGTH];
     char prefix[PREFIX_LENGTH];
     char suffix[SUFFIX_LENGTH];
+    long int pwn_num;
 } Password;
 
 /* Struct to store GTK widget pointers.

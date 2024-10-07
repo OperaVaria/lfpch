@@ -18,9 +18,9 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 #include "request.h"
 #include "types.h"
 
-/* Processes backend function calls. Takes a Password struct instance as argument.
-Returns the number the password has been in a data breach, or NULL if not found. */ 
-char *backend_process(Password *password_ptr) {   
+/* Processes backend function calls. Takes a Password struct instance as argument,
+fills it with proper values. */ 
+void backend_process(Password *password_ptr) {   
         
     /* HASHING */
 
@@ -43,11 +43,9 @@ char *backend_process(Password *password_ptr) {
     // Call cURL session function.
     curl_session(url, &memory);
 
-    // Call response handling function to get pwn number.
-    char *pwn_num = haveibeenpwned_res_hand(memory.string, password_ptr->suffix);
+    // Call response handling function to get pwn number, store it in struct.
+    password_ptr->pwn_num = haveibeenpwned_res_hand(memory.string, password_ptr->suffix);
 
     // Free response string memory.
     free(memory.string);
-
-    return pwn_num;
 }

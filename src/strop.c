@@ -45,12 +45,11 @@ char *copy_substring(const char *start, const char *end) {
 
 /* Function to handle the haveibeenpwned.com response string.
 Takes the response string and a password hash suffix as arguments.
-Returns the number the password has been in a data breach,
-or NULL if not found. */
-char *haveibeenpwned_res_hand(const char *response, const char *suffix) {
+Returns the number the password has been in a data breach (as long int). */
+long int haveibeenpwned_res_hand(const char *response, const char *suffix) {
 
-    // Declare return pointer.
-    char *pwn_num;
+    // Declare return variable.
+    long int pwn_num;
 
     //Search for suffix in response string.
     char *line_ptr = strstr(response, suffix);
@@ -63,13 +62,13 @@ char *haveibeenpwned_res_hand(const char *response, const char *suffix) {
         char *end_ptr = strchr(line_ptr, '\r');
         start_ptr++; // Move pointer over ':'.
 
-        // Call substring copy function.
-        pwn_num = copy_substring(start_ptr, end_ptr);
+        // Convert numbers to long int.
+        pwn_num = strtol(start_ptr, &end_ptr, 10);
 
     }
     else {
-        // Not found: set return variable to null.
-        pwn_num = NULL;
+        // Not found: set to 0.
+        pwn_num = 0;
     }
 
     return pwn_num;

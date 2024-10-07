@@ -81,13 +81,12 @@ void submit_callback(GtkWidget *button, gpointer data) {
 
     // Declare variables.
     Widgets *widgets_ptr;
-    char *result_num, result_buffer[256];
+    char result_buffer[256];
 
     // Cast to the Widgets struct.
     widgets_ptr = (Widgets *)data;
 
-    /* Create Password struct instance, store password data
-    and size */ 
+    // Create Password struct instance, store password data and size.
     Password password;
     password.pass_data = gtk_editable_get_text(GTK_EDITABLE(widgets_ptr->entry));
     password.pass_size = strlen(password.pass_data);
@@ -95,23 +94,20 @@ void submit_callback(GtkWidget *button, gpointer data) {
     // Check if password too long.
     if (password.pass_size > PASSWORD_MAX_LENGTH) {
 
-        // Over 64 characters: display warning, abort.
+        // Too long: display warning, abort.
         gtk_label_set_text(GTK_LABEL(widgets_ptr->label), "Password too long!");
 
     } else {
 
-        // Under 64 characters: call backend process, continue normally.
-        result_num = backend_process(&password);
+        // Else: call backend process.
+        backend_process(&password);
 
         // Create label string based on the result.
-        if (result_num != NULL) {
-            snprintf(result_buffer, sizeof(result_buffer), "This password has been hacked %s times\nbefore!", result_num);
+        if (password.pwn_num != 0) {
+            snprintf(result_buffer, sizeof(result_buffer), "This password has been hacked %ld times\nbefore!", password.pwn_num);
         } else {
             snprintf(result_buffer, sizeof(result_buffer), "Password not found.");
         }
-
-        // Free result_num (manually allocated in callback process).
-        free(result_num);
 
         // Update label.
         gtk_label_set_text(GTK_LABEL(widgets_ptr->label), result_buffer);
