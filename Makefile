@@ -26,35 +26,35 @@ SRC_DIR := ./src
 OFILES := $(OBJ_PATH)/backend.o $(OBJ_PATH)/gui.o $(OBJ_PATH)/hashing.o $(OBJ_PATH)/main.o $(OBJ_PATH)/request.o
 
 # Flags.
-CFLAGS := -Wall -g `pkg-config --cflags gtk4` -I$(INC_DIR) -L$(LIB_DIR) # Debug flags on for now.
-LDFLAGS := `pkg-config --libs gtk4` -lcrypto -lcurl
+CFLAGS := -Wall -g $(shell pkg-config --cflags gtk4) -I$(INC_DIR) -L$(LIB_DIR) # Debug flags on for now.
+LDFLAGS := $(shell pkg-config --libs gtk4) -lcrypto -lcurl
 
 # Make all.
 all: final
 
 # Create object directory if it doesn't exist.
-$(OBJ_PATH):
+$(DIR_CHECK):
 	@mkdir -p $(OBJ_PATH)
 
 # Compiling .o files with messages:
 
-$(OBJ_PATH)/backend.o: $(OBJ_PATH) $(SRC_DIR)/backend.c
+$(OBJ_PATH)/backend.o: $(DIR_CHECK) $(SRC_DIR)/backend.c
 	$(info Compiling the backend functions object file.)
 	@$(CC) $(CFLAGS) -c $(SRC_DIR)/backend.c -o $(OBJ_PATH)/backend.o
 
-$(OBJ_PATH)/gui.o: $(OBJ_PATH) $(SRC_DIR)/gui.c
+$(OBJ_PATH)/gui.o: $(DIR_CHECK) $(SRC_DIR)/gui.c
 	$(info Compiling the GUI functions object file.)
 	@$(CC) $(CFLAGS) -c $(SRC_DIR)/gui.c -o $(OBJ_PATH)/gui.o
 
-$(OBJ_PATH)/hashing.o: $(OBJ_PATH) $(SRC_DIR)/hashing.c
+$(OBJ_PATH)/hashing.o: $(DIR_CHECK) $(SRC_DIR)/hashing.c
 	$(info Compiling the hashing functions object file.)
 	@$(CC) $(CFLAGS) -c $(SRC_DIR)/hashing.c -o $(OBJ_PATH)/hashing.o
 
-$(OBJ_PATH)/main.o: $(OBJ_PATH) $(SRC_DIR)/main.c
+$(OBJ_PATH)/main.o: $(DIR_CHECK) $(SRC_DIR)/main.c
 	$(info Compiling the main function object file.)
 	@$(CC) $(CFLAGS) -c $(SRC_DIR)/main.c -o $(OBJ_PATH)/main.o
 
-$(OBJ_PATH)/request.o: $(OBJ_PATH) $(SRC_DIR)/request.c
+$(OBJ_PATH)/request.o: $(DIR_CHECK) $(SRC_DIR)/request.c
 	$(info Compiling the request functions object file.)
 	@$(CC) $(CFLAGS) -c $(SRC_DIR)/request.c -o $(OBJ_PATH)/request.o
 
