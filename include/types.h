@@ -27,6 +27,7 @@ typedef struct Memory {
 // Struct to store all password data needed for operation.
 typedef struct Password {
     char const *pass_data;
+    char gen_pass[PASSWORD_MAX_LENGTH + 1];
     size_t pass_size;
     unsigned char digest[SHA_DIGEST_LENGTH];
     char digest_str[DIGEST_STRING_LENGTH];
@@ -40,7 +41,8 @@ Used to pass multiple gpointers to GUI callback functions. */
 typedef struct Widgets {
     // GtkWidget *button;
     // GtkTextBuffer* buffer;
-    GtkWidget *entry;    
+    GtkWidget *entry;
+    GtkWidget *dropdown;   
     GtkWidget *label;    
 } Widgets;
 

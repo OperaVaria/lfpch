@@ -2,7 +2,7 @@
 
 gui.h
 
-Header file for gui.h.
+Header file for gui.c.
 
 Part of the "Lightning-Fast Password Check" project by OperaVaria.
 
@@ -14,12 +14,8 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 
 // Header files.
 #include <gtk/gtk.h>
-#include "types.h"
 
 // Function prototypes.
 void activate(GtkApplication *app, gpointer user_data);
-void submit_callback(GtkWidget *button, gpointer password_entry);
-void on_window_destroy(GtkWidget *widget, gpointer data);
-void update_result_label(Widgets *widgets_ptr, const char *text);
 
 #endif
