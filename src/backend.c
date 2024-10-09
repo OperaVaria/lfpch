@@ -42,8 +42,12 @@ void password_check_process(Password *password_ptr) {
     memory.string = malloc(1);
     memory.size = 0;
 
-    // Call cURL session function.
-    curl_session(url, &memory);
+    // Call cURL session function with error handling.
+    int curl_response = curl_session(url, &memory) != 0;
+    if (curl_response != 0) {
+        fprintf(stderr, "cURL error, code: %d, exiting app.\n", curl_response);
+        exit(EXIT_FAILURE);
+    }
 
     // Call response handling function to get pwn number, store it in struct.
     password_ptr->pwn_num = haveibeenpwned_res_hand(memory.string, password_ptr->suffix);

@@ -31,8 +31,8 @@ int curl_session(const char *url, Memory *memory_ptr) {
     // Init session + error handling.
     curl = curl_easy_init();
     if (curl == NULL) {
-        fprintf(stderr, "HTTP request failed\n");
-        exit(EXIT_FAILURE);
+        fprintf(stderr, "cURL init failed!\n");
+        return CURLE_FAILED_INIT;
     }
     
     // Set headers.
@@ -46,13 +46,12 @@ int curl_session(const char *url, Memory *memory_ptr) {
     curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 5L);  // Connection timeout of 5 seconds.
     curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);  // Fail if HTTP code >= 400.
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_chunk_cb); // Set callback function.
-    // curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0); // For debugging.
     
     // Perform request + error handling.
     res = curl_easy_perform(curl);
     if (res != CURLE_OK) {
-        fprintf(stderr, "Error: %s\n", curl_easy_strerror(res));
-        exit(EXIT_FAILURE);
+        fprintf(stderr, "HTTP error: %s\n", curl_easy_strerror(res));
+        return CURLE_HTTP_RETURNED_ERROR;
     }
 
     // Close session.
@@ -61,7 +60,7 @@ int curl_session(const char *url, Memory *memory_ptr) {
     // Free custom headers.
     curl_slist_free_all(headers);
 
-    return 0;
+    return CURLE_OK;
 }
 
 /* Callback function for cURL to store response data, chunk-by-chunk,
