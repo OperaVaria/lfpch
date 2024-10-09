@@ -21,7 +21,7 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 /* Processes backend function calls to check the number of
 leaked data breaches the password was part of. Uses the
 haveibeenpwned.com password API. Takes a Password struct pointer
-as argument, fills it with proper values. */ 
+as argument, fills the stuct with proper values. */ 
 void password_check_process(Password *password_ptr) {   
         
     /* HASHING */
@@ -49,7 +49,7 @@ void password_check_process(Password *password_ptr) {
         exit(EXIT_FAILURE);
     }
 
-    // Call response handling function to get pwn number, store it in struct.
+    // Call response handling function to get pwn number. Store it in struct.
     password_ptr->pwn_num = haveibeenpwned_res_hand(memory.string, password_ptr->suffix);
 
     // Free response string memory allocated in write_chunk_cb().
@@ -88,54 +88,48 @@ long int haveibeenpwned_res_hand(const char *response, const char *suffix) {
     return pwn_num;
 }
 
-/* Random password generator function. Takes the password
-length and an output array pointer as argument. */ 
-void password_generator(size_t length, char *password) {
-
-    // String literals for character types:
-
-    char digits[] = "0123456789";
-    int digits_length = strlen(digits);
-
-    char lowers[] = "abcdefghijklmnopqrstuwxyz";
-    int lowers_length = strlen(lowers);
-
-    char uppers[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    int uppers_length = strlen(uppers);
-
-    char symbols[] = "!@#$%^&*()";
-    int symbols_length = strlen(symbols);
+/* Random password generator function.
+Takes password attributes (length, character types included)
+as arguments + array pointer to store the password. */ 
+void password_generator(size_t password_length, char *password,
+                        bool lower_include, bool upper_include,
+                        bool num_include, bool symbol_include) {
+    
+    // Declare variables.    
+    char charset[256] = "";
+    size_t charset_length = 0;
+    
+    /* Add to the character set the selected character types
+    and their length. */
+    if (lower_include) {
+        const char lowercase[] = "abcdefghijklmnopqrstuvwxyz";
+        strcat(charset, lowercase);
+        charset_length += strlen(lowercase);
+    }
+    if (upper_include) {
+        const char uppercase[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        strcat(charset, uppercase);        
+        charset_length += strlen(uppercase);
+    }
+    if (num_include) { // Digits added twice to compensate for str length.
+        const char numbers[] = "01234567890123456789";
+        strcat(charset, numbers);        
+        charset_length += strlen(numbers);
+    }
+    if (symbol_include) {
+        const char symbols[] = "!@#$%^&*()_+-=[]{}|;:,.<>?";
+        strcat(charset, symbols);        
+        charset_length += strlen(symbols);
+    }    
 
     // Set the seed (UNIX epoch time).
     srand(time(NULL));
 
-    // Loop to get a random character one-by-one.
-    for (int i = 0; i < length; i++) {
-        
-        // Chose type randomly with rand() and a switch.
-        int char_type = rand() % 4;
-
-        /* After random type selection: random character
-        selection from a "type" array. */
-        switch (char_type) {
-        case 0: // Random digit
-            password[i] = digits[rand() % digits_length];
-            break;
-        case 1: // Random lower case letter.
-            password[i] = lowers[rand() % lowers_length];
-            break;
-        case 2: // Random upper case letter.
-            password[i] = uppers[rand() % uppers_length];
-            break;
-        case 3: // Random symbol.
-            password[i] = symbols[rand() % symbols_length];
-            break;
-        default: // Invalid selection.
-            fprintf(stderr, "Selection error in the random generator!");
-            exit(EXIT_FAILURE);
-        }
+    // Loop to fill the output array one-by-one with random characters.
+    for (size_t i = 0; i < password_length; i++) {
+        password[i] = charset[rand() % charset_length];
     }
-
+    
     // Null terminate the array.
-    password[length] = '\0';
+    password[password_length] = '\0';
 }

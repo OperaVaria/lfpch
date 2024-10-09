@@ -23,7 +23,7 @@ endif
 INC_DIR := ./include
 LIB_DIR := ./lib
 SRC_DIR := ./src
-OFILES := $(OBJ_PATH)/backend.o $(OBJ_PATH)/gui.o $(OBJ_PATH)/gui_cb.o $(OBJ_PATH)/hashing.o $(OBJ_PATH)/main.o $(OBJ_PATH)/request.o
+OFILES := $(OBJ_PATH)/backend.o $(OBJ_PATH)/gui.o $(OBJ_PATH)/callback.o $(OBJ_PATH)/hashing.o $(OBJ_PATH)/main.o $(OBJ_PATH)/request.o
 
 # Flags.
 CFLAGS := -Wall -g $(shell pkg-config --cflags gtk4) -I$(INC_DIR) -L$(LIB_DIR) # Debug flags on for now.
@@ -46,9 +46,9 @@ $(OBJ_PATH)/gui.o: $(DIR_CHECK) $(SRC_DIR)/gui.c
 	$(info Compiling the GUI structure object file.)
 	@$(CC) $(CFLAGS) -c $(SRC_DIR)/gui.c -o $(OBJ_PATH)/gui.o
 
-$(OBJ_PATH)/gui_cb.o: $(DIR_CHECK) $(SRC_DIR)/gui_cb.c
-	$(info Compiling the GUI callback functions object file.)
-	@$(CC) $(CFLAGS) -c $(SRC_DIR)/gui_cb.c -o $(OBJ_PATH)/gui_cb.o
+$(OBJ_PATH)/callback.o: $(DIR_CHECK) $(SRC_DIR)/callback.c
+	$(info Compiling the callback functions object file.)
+	@$(CC) $(CFLAGS) -c $(SRC_DIR)/callback.c -o $(OBJ_PATH)/callback.o
 
 $(OBJ_PATH)/hashing.o: $(DIR_CHECK) $(SRC_DIR)/hashing.c
 	$(info Compiling the hashing functions object file.)

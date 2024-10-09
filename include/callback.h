@@ -1,16 +1,16 @@
 /*
 
-gui_cb.h
+callback.h
 
-Header file for gui_cb.c.
+Header file for callback.c.
 
 Part of the "Lightning-Fast Password Check" project by OperaVaria.
 
 */
 
 // Guard.
-#ifndef GUI_CB_H
-#define GUI_CB_H
+#ifndef callback_H
+#define callback_H
 
 // Header files.
 #include <gtk/gtk.h>

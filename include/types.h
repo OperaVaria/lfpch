@@ -39,11 +39,15 @@ typedef struct Password {
 /* Struct to store GTK widget pointers.
 Used to pass multiple gpointers to GUI callback functions. */
 typedef struct Widgets {
-    // GtkWidget *button;
-    // GtkTextBuffer* buffer;
-    GtkWidget *entry;
-    GtkWidget *dropdown;   
-    GtkWidget *label;    
+    // GtkWidget *submit_button;
+    // GtkTextBuffer* dropdown_buffer;
+    GtkWidget *password_entry;   
+    GtkWidget *result_label;    
+    GtkWidget *length_dropdown;
+    GtkWidget *lower_check;
+    GtkWidget *upper_check;
+    GtkWidget *num_check;
+    GtkWidget *symbol_check;
 } Widgets;
 
 #endif
