@@ -19,9 +19,9 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 static size_t write_chunk_cb(void *data, size_t size, size_t nmemb, void *clientp);
 
 /* Initiate a cURL session with the "easy" API. Get a response and
-store the data to a dynamically allocated char array. Takes a url string
-and a Memory struct as argument. Returns status code.*/
-int curl_session(const char *url, Memory *memory_ptr) {
+store the data to a dynamically allocated char array. Takes a url sting, a header data
+string, and a Memory struct as arguments. Returns status code.*/
+int curl_session(const char *url, const char *custom_header, Memory *memory_ptr) {
 
     // Declare cURL variables.
     CURL *curl;
@@ -35,9 +35,9 @@ int curl_session(const char *url, Memory *memory_ptr) {
         return CURLE_FAILED_INIT;
     }
     
-    // Set headers.
-    headers = curl_slist_append(headers, "Add-Padding: true"); /*  Add padding to the haveibeenpwned.com
-                                                                for more obfuscation. */        
+    // Add custom headers.
+    headers = curl_slist_append(headers, custom_header);
+           
     // Session options.
     curl_easy_setopt(curl, CURLOPT_URL, url); // Pass URL.
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers); // Pass headers.  

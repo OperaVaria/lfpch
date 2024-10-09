@@ -13,6 +13,7 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <openssl/rand.h>
 #include "backend.h"
 #include "hashing.h"
 #include "request.h"
@@ -37,13 +38,17 @@ void password_check_process(Password *password_ptr) {
     char url[64];
     sprintf(url, "https://api.pwnedpasswords.com/range/%s", password_ptr->prefix);
 
+    /* Declare header string. Adds padding to the haveibeenpwned.com response
+    for more obfuscation. */
+    char header_data[] = "Add-Padding: true";
+
     // Create Memory struct instance to store response chunks.
     Memory memory;
     memory.string = malloc(1);
     memory.size = 0;
 
     // Call cURL session function with error handling.
-    int curl_response = curl_session(url, &memory) != 0;
+    int curl_response = curl_session(url, header_data, &memory);
     if (curl_response != 0) {
         fprintf(stderr, "cURL error, code: %d, exiting app.\n", curl_response);
         exit(EXIT_FAILURE);
@@ -89,14 +94,16 @@ long int haveibeenpwned_res_hand(const char *response, const char *suffix) {
 }
 
 /* Random password generator function.
-Takes password attributes (length, character types included)
+Takes password attributes (length, character types to include)
 as arguments + array pointer to store the password. */ 
 void password_generator(size_t password_length, char *password,
                         bool lower_include, bool upper_include,
                         bool num_include, bool symbol_include) {
     
-    // Declare variables.    
+    // Declare variables.
     char charset[256] = "";
+    unsigned char random_bytes[sizeof(unsigned long long)];
+    unsigned long long int seed_multiplier;
     size_t charset_length = 0;
     
     /* Add to the character set the selected character types
@@ -122,8 +129,12 @@ void password_generator(size_t password_length, char *password,
         charset_length += strlen(symbols);
     }    
 
-    // Set the seed (UNIX epoch time).
-    srand(time(NULL));
+    // Get a random number with OpenSSL's RAND_bytes function.    
+    RAND_bytes(random_bytes, sizeof(unsigned int));
+    seed_multiplier = (unsigned long long) *random_bytes;
+
+    // Set a seed for rand(). Seed = Unix epoch * random ullint.
+    srand(time(NULL) * seed_multiplier);
 
     // Loop to fill the output array one-by-one with random characters.
     for (size_t i = 0; i < password_length; i++) {
