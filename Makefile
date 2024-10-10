@@ -40,7 +40,7 @@ $(DIR_CHECK):
 
 $(OBJ_PATH)/backend.o: $(DIR_CHECK) $(SRC_DIR)/backend.c
 	$(info Compiling the backend functions object file.)
-	@$(CC) $(CFLAGS) -c $(SRC_DIR)/backend.c -o $(OBJ_PATH)/backend.o
+	@$(CC) $(CFLAGS) -mrdseed -c $(SRC_DIR)/backend.c -o $(OBJ_PATH)/backend.o
 
 $(OBJ_PATH)/gui.o: $(DIR_CHECK) $(SRC_DIR)/gui.c
 	$(info Compiling the GUI structure object file.)

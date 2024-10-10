@@ -12,8 +12,7 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
-#include <openssl/rand.h>
+#include <immintrin.h>
 #include "backend.h"
 #include "hashing.h"
 #include "request.h"
@@ -22,9 +21,9 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 /* Processes backend function calls to check the number of
 leaked data breaches the password was part of. Uses the
 haveibeenpwned.com password API. Takes a Password struct pointer
-as argument, fills the stuct with proper values. */ 
-void password_check_process(Password *password_ptr) {   
-        
+as argument, fills the stuct with proper values. */
+void password_check_process(Password *password_ptr) {
+
     /* HASHING */
 
     // Call hashing functions.
@@ -95,17 +94,15 @@ long int haveibeenpwned_res_hand(const char *response, const char *suffix) {
 
 /* Random password generator function.
 Takes password attributes (length, character types to include)
-as arguments + array pointer to store the password. */ 
+as arguments + array pointer to store the password. */
 void password_generator(size_t password_length, char *password,
                         bool lower_include, bool upper_include,
                         bool num_include, bool symbol_include) {
-    
+
     // Declare variables.
     char charset[256] = "";
-    unsigned char random_bytes[sizeof(unsigned long long)];
-    unsigned long long int seed_multiplier;
     size_t charset_length = 0;
-    
+
     /* Add to the character set the selected character types
     and their length. */
     if (lower_include) {
@@ -115,32 +112,53 @@ void password_generator(size_t password_length, char *password,
     }
     if (upper_include) {
         const char uppercase[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        strcat(charset, uppercase);        
+        strcat(charset, uppercase);
         charset_length += strlen(uppercase);
     }
     if (num_include) { // Digits added twice to compensate for str length.
         const char numbers[] = "01234567890123456789";
-        strcat(charset, numbers);        
+        strcat(charset, numbers);
         charset_length += strlen(numbers);
     }
     if (symbol_include) {
         const char symbols[] = "!@#$%^&*()_+-=[]{}|;:,.<>?";
-        strcat(charset, symbols);        
+        strcat(charset, symbols);
         charset_length += strlen(symbols);
-    }    
+    }
 
-    // Get a random number with OpenSSL's RAND_bytes function.    
-    RAND_bytes(random_bytes, sizeof(unsigned int));
-    seed_multiplier = (unsigned long long) *random_bytes;
-
-    // Set a seed for rand(). Seed = Unix epoch * random ullint.
-    srand(time(NULL) * seed_multiplier);
+    // Set a "true" random seed for rand(). Source: x86 processor's DRNG.
+    srand(get_random_seed());
 
     // Loop to fill the output array one-by-one with random characters.
     for (size_t i = 0; i < password_length; i++) {
         password[i] = charset[rand() % charset_length];
     }
-    
+
     // Null terminate the array.
     password[password_length] = '\0';
+}
+
+/* Generate a "true" random seed with an x86 processor's DRNG.
+Returns random number as unsigned int. */
+unsigned int get_random_seed() {
+
+    // Declare variables.
+    int tries = 0;
+    int status;
+    unsigned int result;
+
+    /* Get random integer with the RDSEED instruction,
+    retry if it fails (failure = 0), retry max 100 times. */
+    do {
+        status = _rdseed32_step(&result);
+        tries++;
+    } while (status != 1 && tries <= 100);
+
+    // If the call still fails: serious error, exit program.
+    if (status == 0) {
+        fprintf(stderr, "CPU error, random number generation failed.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    return result;
 }
