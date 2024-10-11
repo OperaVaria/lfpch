@@ -9,8 +9,8 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 */
 
 // Guard.
-#ifndef callback_H
-#define callback_H
+#ifndef CALLBACK_H
+#define CALLBACK_H
 
 // Header files.
 #include <gtk/gtk.h>

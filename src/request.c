@@ -15,7 +15,7 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 #include "request.h"
 #include "types.h"
 
-// Static cURL callback function prototype.
+// Static function prototypes.
 static size_t write_chunk_cb(void *data, size_t size, size_t nmemb, void *clientp);
 
 /* Initiate a cURL session with the "easy" API. Get a response and

@@ -16,6 +16,6 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 #include <gtk/gtk.h>
 
 // Function prototypes.
-void activate(GtkApplication *app, gpointer user_data);
+void activate(GtkApplication *app, gpointer data);
 
 #endif

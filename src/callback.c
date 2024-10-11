@@ -10,10 +10,15 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 
 // Header files.
 #include <gtk/gtk.h>
-#include "backend.h"
+#include "checker.h"
+#include "generator.h"
 #include "gui.h"
 #include "callback.h"
 #include "types.h"
+
+// Static function prototypes.
+// static const char* get_strength_color(int strength);
+static const char* get_strength_description(int strength);
 
 /* Callback function when a password is submitted to be checked
 (submit button or enter key press). */
@@ -21,37 +26,58 @@ void check_callback(GtkWidget *button, gpointer data) {
 
     // Declare variables.
     Widgets *widgets_ptr;
-    char result_buffer[256];
+    char strength_msg_buff[128], pwn_msg_buff[128];    
 
     // (Re)cast to Widgets struct.
     widgets_ptr = (Widgets *)data;
 
-    // Create Password struct instance, store password data and size.
+    // Create Password struct instance, store password data and length.
     Password password;
-    password.pass_data = gtk_editable_get_text(GTK_EDITABLE(widgets_ptr->password_entry));
-    password.pass_size = strlen(password.pass_data);
+    password.input_data = gtk_editable_get_text(GTK_EDITABLE(widgets_ptr->password_entry));
+    password.length = strlen(password.input_data);
 
-    // Check if password too long.
-    if (password.pass_size > PASSWORD_MAX_LENGTH) {
-
-        // Too long: display warning, abort.
+    /* Check if no password entered or password is too long. Display warning to result label,
+    reset strength label and bar, abort. */
+    if (password.input_data[0] == '\0') {
+        gtk_label_set_text(GTK_LABEL(widgets_ptr->result_label), "No password entered!");
+        gtk_label_set_text(GTK_LABEL(widgets_ptr->strength_label), "Password Strength:\nn/a");
+        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(widgets_ptr->strength_bar), 0.0);
+    } else if (password.length > PASSWORD_MAX_LENGTH) {
         gtk_label_set_text(GTK_LABEL(widgets_ptr->result_label), "Password too long!");
-
+        gtk_label_set_text(GTK_LABEL(widgets_ptr->strength_label), "Password Strength:\nn/a");
+        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(widgets_ptr->strength_bar), 0.0);
+    
+    // Else: proceed.
     } else {
 
-        // Else: call backend process.
-        password_check_process(&password);
+        // Call backend processes.
+        password.strength_score = password_strength_check(password.input_data, password.length);
+        password.pwn_num = pwn_check_process(&password);
 
-        // Create label string based on the result.
+        /* DISPLAY RESULTS */
+
+        // Update strength bar.
+        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(widgets_ptr->strength_bar),
+                                      password.strength_score / 100.0);
+        /* gtk_widget_set_name(widgets_ptr->strength_bar,
+                            get_strength_color(password.strength_score)); */
+
+        // Update strength label.
+        snprintf(strength_msg_buff, sizeof(strength_msg_buff), "Password Strength:\n%s",
+                                         get_strength_description(password.strength_score));
+        gtk_label_set_text(GTK_LABEL(widgets_ptr->strength_label), strength_msg_buff);
+
+
+        // Create pwn result message based on result.
         if (password.pwn_num != 0) {
-            snprintf(result_buffer, sizeof(result_buffer),
-                     "This password has been hacked %'ld times\nbefore!", password.pwn_num);
+            snprintf(pwn_msg_buff, sizeof(pwn_msg_buff),
+                     "Warning! This password was breached atleast %ld times!", password.pwn_num);
         } else {
-            snprintf(result_buffer, sizeof(result_buffer), "Password not found.");
+            snprintf(pwn_msg_buff, sizeof(pwn_msg_buff), "Password not known to be hacked!");
         }
 
-        // Update label.
-        gtk_label_set_text(GTK_LABEL(widgets_ptr->result_label), result_buffer);
+        // Update pwn label.
+        gtk_label_set_text(GTK_LABEL(widgets_ptr->result_label), pwn_msg_buff);
     }
 }
 
@@ -70,8 +96,8 @@ void generate_callback(GtkWidget *button, gpointer data) {
     // Get the index of the selected value.
     selection_index = gtk_drop_down_get_selected(GTK_DROP_DOWN(widgets_ptr->length_dropdown));
 
-    // Add 4 to index to get size value.
-    password.pass_size = selection_index + 4;
+    // Add password min length to index to get size value.
+    password.length = selection_index + PASSWORD_MIN_LENGTH;
 
     // Get the status of the checkboxes.
     lower_include = gtk_check_button_get_active (GTK_CHECK_BUTTON(widgets_ptr->lower_check));
@@ -86,11 +112,11 @@ void generate_callback(GtkWidget *button, gpointer data) {
     }
 
     // Call password generator function.
-    password_generator(password.pass_size, password.gen_pass,
+    password_generator(password.length, password.gen_data,
                        lower_include, upper_include, num_include, symbol_include);
 
     // Display newly generated password and notification.
-    gtk_editable_set_text(GTK_EDITABLE(widgets_ptr->password_entry), password.gen_pass);
+    gtk_editable_set_text(GTK_EDITABLE(widgets_ptr->password_entry), password.gen_data);
     gtk_label_set_text(GTK_LABEL(widgets_ptr->result_label), "Secure password generated!");
 }
 
@@ -98,4 +124,24 @@ void generate_callback(GtkWidget *button, gpointer data) {
 void on_window_destroy(GtkWidget *widget, gpointer data) {
     Widgets *widgets_ptr = (Widgets *)data;
     g_free(widgets_ptr);
+}
+
+// HELPER FUNCTIONS:
+
+/* Function to get color based on strength score.
+static const char* get_strength_color(int strength) {
+    if (strength < 20) return "red";
+    if (strength < 40) return "orange";
+    if (strength < 60) return "yellow";
+    if (strength < 80) return "lightgreen";
+    return "green";
+} */
+
+// Function to get description based on strength score.
+static const char* get_strength_description(int strength) {
+    if (strength < 20) return "Very Weak";
+    if (strength < 40) return "Weak";
+    if (strength < 60) return "Moderate";
+    if (strength < 80) return "Strong";
+    return "Very Strong";
 }

@@ -2,7 +2,7 @@
 
 gui.c
 
-Functions related the user interface structure.
+Functions related to the user interface structure.
 
 Part of the "Lightning-Fast Password Check" project by OperaVaria.
 
@@ -16,29 +16,64 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 #include "macros.h"
 #include "types.h"
 
+// Static function prototypes.
+static GtkWidget* create_window(GtkApplication *app);
+static GtkWidget* create_main_container(void);
+static void create_password_input_section(GtkWidget *vbox, Widgets *widgets);
+static void create_strength_display_section(GtkWidget *vbox, Widgets *widgets);
+static void create_result_display_section(GtkWidget *vbox, Widgets *widgets);
+static void create_password_generator_section(GtkWidget *vbox, Widgets *widgets);
+static void connect_signals(GtkWidget *window, Widgets *widgets);
+
 // Set up GUI structure.
-void activate(GtkApplication *app, gpointer user_data) {
+void activate(GtkApplication *app, gpointer data) {
 
-    // Declare GTK variables.
-    GtkWidget *window, *vbox, *hbox,
-              *instruction_label, *generator_label, *length_label, *result_label,
-              *password_entry,
-              *length_dropdown,
-              *generate_button, *submit_button,
-              *lower_check, *upper_check, *num_check, *symbol_check;
-    GtkStringList *string_list;
+    // Declare variables.
+    GtkWidget *window, *vbox;
+    Widgets *widgets;
 
-    // Create window.
-    window = gtk_application_window_new(app);
-    gtk_window_set_title(GTK_WINDOW(window), "Lightning-Fast Password Check");
-    // gtk_window_set_default_size (GTK_WINDOW (window), 640, 410);
-    gtk_window_set_resizable(GTK_WINDOW (window), FALSE);
-
-    // Create horizontal box as general container.
-    vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    // Create main window and container.
+    window = create_window(app);
+    vbox = create_main_container();
     gtk_window_set_child(GTK_WINDOW(window), vbox);
 
-    // Create an instruction label.
+    // Allocate memory for Widgets struct.
+    widgets = g_new(Widgets, 1);
+
+    // Create GUI sections.
+    create_password_input_section(vbox, widgets);
+    create_strength_display_section(vbox, widgets);
+    create_result_display_section(vbox, widgets);
+    create_password_generator_section(vbox, widgets);
+
+    // Connect callback functions.
+    connect_signals(window, widgets);
+
+    gtk_window_present(GTK_WINDOW(window));
+}
+
+/* Functions to create main elements. */
+
+static GtkWidget* create_window(GtkApplication *app) {
+    GtkWidget *window = gtk_application_window_new(app);
+    gtk_window_set_title(GTK_WINDOW(window), "Lightning-Fast Password Check");
+    gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
+    return window;
+}
+
+static GtkWidget* create_main_container(void) {
+    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    return vbox;
+}
+
+/* Functions to create widget sections. */
+
+static void create_password_input_section(GtkWidget *vbox, Widgets *widgets) {
+
+    // Declare variables.
+    GtkWidget *instruction_label, *password_entry, *submit_button;
+
+    // Create top instruction label.
     instruction_label = gtk_label_new("Enter or generate password:");
     gtk_box_append(GTK_BOX(vbox), instruction_label);
     gtk_widget_set_margin_top(instruction_label, 25);
@@ -47,63 +82,102 @@ void activate(GtkApplication *app, gpointer user_data) {
     password_entry = gtk_password_entry_new();
     gtk_password_entry_set_show_peek_icon(GTK_PASSWORD_ENTRY(password_entry), true);
     gtk_box_append(GTK_BOX(vbox), password_entry);
-    gtk_widget_set_margin_top(password_entry, 10);
     gtk_widget_set_margin_start(password_entry, 50);
     gtk_widget_set_margin_end(password_entry, 50);
 
-    // Create password "submit" button.
+    // Create password submit button.
     submit_button = gtk_button_new_with_label("Check Password");
     gtk_box_append(GTK_BOX(vbox), submit_button);
-    gtk_widget_set_margin_top(submit_button, 10);
     gtk_widget_set_margin_start(submit_button, 50);
     gtk_widget_set_margin_end(submit_button, 50);
 
-    // Create info label.
+    // Add widget pointers to struct.
+    widgets->instruction_label = instruction_label;
+    widgets->password_entry = password_entry;
+    widgets->submit_button = submit_button;
+}
+
+static void create_strength_display_section(GtkWidget *vbox, Widgets *widgets) {
+
+    // Declare variables.
+    GtkWidget *strength_label, *strength_bar;
+
+    // Creat label to display password strength message.
+    strength_label = gtk_label_new("Password Strength:\nn/a");
+    gtk_box_append(GTK_BOX(vbox), strength_label);
+    gtk_label_set_justify(GTK_LABEL(strength_label), GTK_JUSTIFY_CENTER);
+    gtk_widget_set_margin_top(strength_label, 20);
+
+    // Create strength "progress" bar.
+    strength_bar = gtk_progress_bar_new();
+    gtk_box_append(GTK_BOX(vbox), strength_bar);
+    gtk_progress_bar_set_show_text(GTK_PROGRESS_BAR(strength_bar), FALSE);
+    gtk_widget_set_margin_start(strength_bar, 50);
+    gtk_widget_set_margin_end(strength_bar, 50);
+
+    // Add widget pointers to struct.
+    widgets->strength_label = strength_label;
+    widgets->strength_bar = strength_bar;    
+}
+
+static void create_result_display_section(GtkWidget *vbox, Widgets *widgets) {
+
+    // Declare variables.
+    GtkWidget *result_label;
+
+    // Create result info label.
     result_label = gtk_label_new("The result will be displayed here");
     gtk_label_set_justify(GTK_LABEL(result_label), GTK_JUSTIFY_CENTER);
-    gtk_label_set_wrap(GTK_LABEL(result_label), true);
     gtk_box_append(GTK_BOX(vbox), result_label);
-    gtk_widget_set_margin_top(result_label, 20);
+    gtk_widget_set_margin_top(result_label, 10);
     gtk_widget_set_margin_bottom(result_label, 20);
     gtk_widget_set_margin_start(result_label, 20);
     gtk_widget_set_margin_end(result_label, 20);
-    gtk_widget_set_size_request(result_label, -1, 50);
 
-    // Create generator label
+    // Add widget pointers to struct.
+    widgets->result_label = result_label;
+}
+
+static void create_password_generator_section(GtkWidget *vbox, Widgets *widgets) {
+
+    // Declare variables.
+    GtkWidget *generator_label, *hbox, *length_label, *length_dropdown,
+              *lower_check, *upper_check, *num_check, *symbol_check, *generate_button;
+    GtkStringList *string_list;
+
+    // Create generator label.
     generator_label = gtk_label_new("Password generator settings:");
     gtk_box_append(GTK_BOX(vbox), generator_label);
-    gtk_widget_set_margin_top(generator_label, 10);
     gtk_widget_set_margin_start(generator_label, 10);
     gtk_widget_set_margin_end(generator_label, 10);
 
-    // Create vertical box for the generator settings widgets.
+    // Create horizontal box for generator setting widgets.
     hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
     gtk_box_append(GTK_BOX(vbox), hbox);
-    gtk_widget_set_margin_top(hbox, 10);
     gtk_widget_set_margin_start(hbox, 25);
     gtk_widget_set_margin_end(hbox, 25);
 
-    // Create label for dropdown menu.
+    // Create label for the password length dropdown menu.
     length_label = gtk_label_new("Password length:");
     gtk_box_append(GTK_BOX(hbox), length_label);
 
     /* Create string list to store password length options
-    (numbers 4 to PASSWORD_MAX_LENGTH).
+    (PASSWORD_MIN_LENGTH to PASSWORD_MAX_LENGTH).
     Conversion to stings unfortunate, but needed. */
     string_list = gtk_string_list_new(NULL);
-    for (int i = 4; i <= PASSWORD_MAX_LENGTH; i++) {
+    for (int i = PASSWORD_MIN_LENGTH; i <= PASSWORD_MAX_LENGTH; i++) {
         char conversion_buffer[3];
         snprintf(conversion_buffer, sizeof(conversion_buffer), "%d", i);
         gtk_string_list_append(string_list, conversion_buffer);
     }
 
-    // Create dropdown menu for password length, default : 16 char.
+    // Create dropdown menu for password length, default : default : 16 char.
     length_dropdown = gtk_drop_down_new(G_LIST_MODEL(string_list), NULL);
-    gtk_drop_down_set_selected(GTK_DROP_DOWN(length_dropdown), 16 - 4);
+    gtk_drop_down_set_selected(GTK_DROP_DOWN(length_dropdown), 16 - PASSWORD_MIN_LENGTH);
     gtk_widget_set_size_request(length_dropdown, 60, -1);
     gtk_box_append(GTK_BOX(hbox), length_dropdown);
 
-    // Create check buttons (4 char types):
+    // Create character type check buttons:
 
     lower_check = gtk_check_button_new_with_label("Lowercase");
     gtk_check_button_set_active(GTK_CHECK_BUTTON(lower_check), true);
@@ -113,7 +187,7 @@ void activate(GtkApplication *app, gpointer user_data) {
     gtk_check_button_set_active(GTK_CHECK_BUTTON(upper_check), true);
     gtk_box_append(GTK_BOX(hbox), upper_check);
 
-    num_check = gtk_check_button_new_with_label("Numbers"),
+    num_check = gtk_check_button_new_with_label("Numbers");
     gtk_check_button_set_active(GTK_CHECK_BUTTON(num_check), true);
     gtk_box_append(GTK_BOX(hbox), num_check);
 
@@ -121,30 +195,27 @@ void activate(GtkApplication *app, gpointer user_data) {
     gtk_check_button_set_active(GTK_CHECK_BUTTON(symbol_check), true);
     gtk_box_append(GTK_BOX(hbox), symbol_check);
 
-    // Create "generate" button.
+    // Create generate button.
     generate_button = gtk_button_new_with_label("Generate Secure Password");
     gtk_box_append(GTK_BOX(vbox), generate_button);
-    gtk_widget_set_margin_top(generate_button, 10);
     gtk_widget_set_margin_bottom(generate_button, 25);
     gtk_widget_set_margin_start(generate_button, 50);
     gtk_widget_set_margin_end(generate_button, 50);
 
-    // Allocate memory for Widgets struct and initialize.
-    Widgets *widgets = g_new(Widgets, 1);
-    widgets->password_entry = password_entry;
+    // Add widget pointers to struct.
     widgets->lower_check = lower_check;
     widgets->upper_check = upper_check;
     widgets->num_check = num_check;
     widgets->symbol_check = symbol_check;
     widgets->length_dropdown = length_dropdown;
-    widgets->result_label = result_label;
+    widgets->generate_button = generate_button;
+}
 
-    // Connect callback functions.
-    g_signal_connect(password_entry, "activate", G_CALLBACK(check_callback), widgets);
-    g_signal_connect(generate_button, "clicked", G_CALLBACK(generate_callback), widgets);
-    g_signal_connect(submit_button, "clicked", G_CALLBACK(check_callback), widgets);
+/* Connect callback functions, pass Widgets struct to be able to interact with
+multiple widgets in one callback function */
+static void connect_signals(GtkWidget *window, Widgets *widgets) {
+    g_signal_connect(widgets->password_entry, "activate", G_CALLBACK(check_callback), widgets);
+    g_signal_connect(widgets->generate_button, "clicked", G_CALLBACK(generate_callback), widgets);
+    g_signal_connect(widgets->submit_button, "clicked", G_CALLBACK(check_callback), widgets);
     g_signal_connect(window, "destroy", G_CALLBACK(on_window_destroy), widgets);
-
-
-    gtk_window_present(GTK_WINDOW(window));
 }

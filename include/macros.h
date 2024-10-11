@@ -20,5 +20,7 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 #define PREFIX_LENGTH 6
 #define SUFFIX_LENGTH DIGEST_STRING_LENGTH - 5 
 #define PASSWORD_MAX_LENGTH 64
+#define PASSWORD_MIN_LENGTH 8
+#define STRONG_PASSWORD_LENGTH 16
 
 #endif
