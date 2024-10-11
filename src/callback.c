@@ -17,7 +17,7 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 #include "types.h"
 
 // Static function prototypes.
-// static const char* get_strength_color(int strength);
+static const char* get_strength_color(int strength);
 static const char* get_strength_description(int strength);
 
 /* Callback function when a password is submitted to be checked
@@ -59,8 +59,8 @@ void check_callback(GtkWidget *button, gpointer data) {
         // Update strength bar.
         gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(widgets_ptr->strength_bar),
                                       password.strength_score / 100.0);
-        /* gtk_widget_set_name(widgets_ptr->strength_bar,
-                            get_strength_color(password.strength_score)); */
+        gtk_widget_set_name(widgets_ptr->strength_bar,
+                            get_strength_color(password.strength_score));
 
         // Update strength label.
         snprintf(strength_msg_buff, sizeof(strength_msg_buff), "Password Strength:\n%s",
@@ -128,14 +128,14 @@ void on_window_destroy(GtkWidget *widget, gpointer data) {
 
 // HELPER FUNCTIONS:
 
-/* Function to get color based on strength score.
+// Function to get color based on strength score.
 static const char* get_strength_color(int strength) {
     if (strength < 20) return "red";
     if (strength < 40) return "orange";
     if (strength < 60) return "yellow";
     if (strength < 80) return "lightgreen";
     return "green";
-} */
+}
 
 // Function to get description based on strength score.
 static const char* get_strength_description(int strength) {

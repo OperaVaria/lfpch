@@ -1,0 +1,21 @@
+/* Style sheet for the "Lightning-Fast Password Check" project by OperaVaria. */
+
+/* Progressbar color. */
+progressbar > trough > progress {
+  min-height: 10px;
+}
+progressbar#red > trough > progress {
+  background-color: red;
+}
+progressbar#orange > trough > progress {
+  background-color: orange;
+}
+progressbar#yellow > trough > progress {
+  background-color: yellow;
+}
+progressbar#lightgreen > trough > progress {
+  background-color: lightgreen;
+}
+progressbar#green > trough > progress {
+  background-color: green;
+}

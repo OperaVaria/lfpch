@@ -24,6 +24,7 @@ static void create_strength_display_section(GtkWidget *vbox, Widgets *widgets);
 static void create_result_display_section(GtkWidget *vbox, Widgets *widgets);
 static void create_password_generator_section(GtkWidget *vbox, Widgets *widgets);
 static void connect_signals(GtkWidget *window, Widgets *widgets);
+static void add_css_provider(GtkWidget *window);
 
 // Set up GUI structure.
 void activate(GtkApplication *app, gpointer data) {
@@ -48,6 +49,9 @@ void activate(GtkApplication *app, gpointer data) {
 
     // Connect callback functions.
     connect_signals(window, widgets);
+
+    // Add CSS styling,
+    add_css_provider(window);
 
     gtk_window_present(GTK_WINDOW(window));
 }
@@ -219,3 +223,14 @@ static void connect_signals(GtkWidget *window, Widgets *widgets) {
     g_signal_connect(widgets->submit_button, "clicked", G_CALLBACK(check_callback), widgets);
     g_signal_connect(window, "destroy", G_CALLBACK(on_window_destroy), widgets);
 }
+
+// Connect a CSS file to display.
+static void add_css_provider(GtkWidget *window) {
+    GtkCssProvider * provider;
+    provider = gtk_css_provider_new ();
+    gtk_css_provider_load_from_file (provider, g_file_new_for_path ("./styles/styles.css"));
+    gtk_style_context_add_provider_for_display (gtk_widget_get_display (window),
+                                                GTK_STYLE_PROVIDER (provider),
+                                                GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+}
+
