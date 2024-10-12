@@ -24,32 +24,24 @@ as arguments + array pointer to store the password. */
 void password_generator(size_t password_length, char *password,
                         bool lower_include, bool upper_include,
                         bool num_include, bool symbol_include) {
+    
+    // Declare charset constants.
+    const char lowercase[] = "abcdefghijklmnopqrstuvwxyz";
+    const char uppercase[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const char numbers[] = "0123456789";
+    const char symbols[] = "!@#$%^&*()_+-=[]{}|;:,.<>?";
 
-    // Declare variables.
-    char charset[256] = "";
-    size_t charset_length = 0;
+    // Create an array of charset pointers, length values, and include booleans.
+    const char* charsets[4] = {lowercase, uppercase, numbers, symbols};
+    size_t charset_lengths[4] = {strlen(lowercase), strlen(uppercase), strlen(numbers), strlen(symbols)};
+    bool charset_include[4] = {lower_include, upper_include, num_include, symbol_include};
 
-    /* Add to the character set the selected character types
-    and their length. */
-    if (lower_include) {
-        const char lowercase[] = "abcdefghijklmnopqrstuvwxyz";
-        strcat(charset, lowercase);
-        charset_length += strlen(lowercase);
-    }
-    if (upper_include) {
-        const char uppercase[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        strcat(charset, uppercase);
-        charset_length += strlen(uppercase);
-    }
-    if (num_include) { // Digits added twice to compensate for str length.
-        const char numbers[] = "01234567890123456789";
-        strcat(charset, numbers);
-        charset_length += strlen(numbers);
-    }
-    if (symbol_include) {
-        const char symbols[] = "!@#$%^&*()_+-=[]{}|;:,.<>?";
-        strcat(charset, symbols);
-        charset_length += strlen(symbols);
+    // Count how many character types are included.
+    int included_charsets = 0;
+    for (int i = 0; i < 4; i++) {
+        if (charset_include[i]) {
+            included_charsets++;
+        }
     }
 
     // Set a "true" random seed for rand(). Source: x86 processor's DRNG.
@@ -57,11 +49,30 @@ void password_generator(size_t password_length, char *password,
 
     // Loop to fill the output array one-by-one with random characters.
     for (size_t i = 0; i < password_length; i++) {
-        password[i] = charset[rand() % charset_length];
+
+        // Randomly select a character type (only if marked as included).
+        int charset_index;
+        do {
+            charset_index = rand() % 4;
+        } while (!charset_include[charset_index]);
+
+        // Select a random character from the chosen character set
+        int char_index = rand() % charset_lengths[charset_index];
+        password[i] = charsets[charset_index][char_index];
     }
 
     // Null terminate the array.
     password[password_length] = '\0';
+
+    /* Randomly swap in a character from every char type to ensure
+    all are present. */
+    for (int i = 0; i < 4; i++) {
+        if (charset_include[i]) {
+            int replace_index = rand() % password_length;
+            int char_index = rand() % charset_lengths[i];
+            password[replace_index] = charsets[i][char_index];
+        }
+    }
 }
 
 /* Generate a "true" random seed with an x86 processor's DRNG.
