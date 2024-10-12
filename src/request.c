@@ -34,19 +34,19 @@ int curl_session(const char *url, const char *custom_header, Memory *memory_ptr)
         fprintf(stderr, "cURL init failed!\n");
         return CURLE_FAILED_INIT;
     }
-    
+
     // Add custom headers.
     headers = curl_slist_append(headers, custom_header);
-           
+
     // Session options.
     curl_easy_setopt(curl, CURLOPT_URL, url); // Pass URL.
-    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers); // Pass headers.  
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers); // Pass headers.
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)memory_ptr); // Pass chunks to cb function.
     curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);  // Set timeout of 10 seconds.
     curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 5L);  // Connection timeout of 5 seconds.
     curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);  // Fail if HTTP code >= 400.
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_chunk_cb); // Set callback function.
-    
+
     // Perform request + error handling.
     res = curl_easy_perform(curl);
     if (res != CURLE_OK) {

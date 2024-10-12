@@ -107,24 +107,23 @@ int password_strength_check(const char* password, size_t length) {
     int score = 0, lowercase_count = 0, uppercase_count = 0,
         number_count =0, symbol_count = 0;
 
-    
     // Length score (40 points).
     score += (length >= STRONG_PASSWORD_LENGTH) ? 40 : (length * 40 / STRONG_PASSWORD_LENGTH);
-    
+
     // Calculate character type variety.
     for (int i = 0; i < length; i++) {
         if (islower(password[i])) lowercase_count++;
-        else if (isupper(password[i])) uppercase_count++;        
+        else if (isupper(password[i])) uppercase_count++;
         else if (isdigit(password[i])) number_count++;
         else symbol_count++;
     }
-    
+
     // Calculate character variety score (60 points).
     score += (uppercase_count > 0) * 10;
     score += (lowercase_count > 0) * 10;
     score += (number_count > 0) * 20;
     score += (symbol_count > 0) * 20;
-    
+
     // Penalty if password shorter than minimum recommended length.
     if (length < PASSWORD_MIN_LENGTH) {
         score = score * length / PASSWORD_MIN_LENGTH;

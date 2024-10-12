@@ -35,7 +35,7 @@ void convert_digest(const unsigned char *hex_arr, char *output_arr) {
 /* Splits an copies digest string into a prefix (first 5 characters)
 and a suffix (remaining) array. Needed for the haveibeenpwned.com password API. */
 void split_digest_str(const char *digest, char *prefix, char *suffix) {
-    
+
     // Copy first 5 characters into prefix.
     strncpy(prefix, digest, 5);
     prefix[5] = '\0';
