@@ -21,7 +21,7 @@ static GtkWidget* create_window(GtkApplication *app);
 static GtkWidget* create_main_container(void);
 static void create_password_input_section(GtkWidget *vbox, Widgets *widgets);
 static void create_strength_display_section(GtkWidget *vbox, Widgets *widgets);
-static void create_result_display_section(GtkWidget *vbox, Widgets *widgets);
+static void create_pwn_display_section(GtkWidget *vbox, Widgets *widgets);
 static void create_password_generator_section(GtkWidget *vbox, Widgets *widgets);
 static void connect_signals(GtkWidget *window, Widgets *widgets);
 static void add_css_provider(GtkWidget *window);
@@ -44,7 +44,7 @@ void activate(GtkApplication *app, gpointer data) {
     // Create GUI sections.
     create_password_input_section(vbox, widgets);
     create_strength_display_section(vbox, widgets);
-    create_result_display_section(vbox, widgets);
+    create_pwn_display_section(vbox, widgets);
     create_password_generator_section(vbox, widgets);
 
     // Connect callback functions.
@@ -83,7 +83,7 @@ static void create_password_input_section(GtkWidget *vbox, Widgets *widgets) {
     gtk_widget_set_margin_top(instruction_label, 25);
 
     // Create password entry field.
-    password_entry = gtk_password_entry_new();    
+    password_entry = gtk_password_entry_new();
     gtk_box_append(GTK_BOX(vbox), password_entry);
     gtk_password_entry_set_show_peek_icon(GTK_PASSWORD_ENTRY(password_entry), true);
     gtk_widget_set_margin_start(password_entry, 50);
@@ -104,14 +104,18 @@ static void create_password_input_section(GtkWidget *vbox, Widgets *widgets) {
 static void create_strength_display_section(GtkWidget *vbox, Widgets *widgets) {
 
     // Declare variables.
-    GtkWidget *strength_label, *strength_bar;
+    GtkWidget *strength_info_label, *strength_label, *strength_bar;
 
-    // Creat label to display password strength message.
-    strength_label = gtk_label_new("Password Strength:\n<b>n/a</b>");
+    // Create info label.
+    strength_info_label = gtk_label_new("Password strength:");
+    gtk_box_append(GTK_BOX(vbox), strength_info_label);
+    gtk_widget_set_margin_top(strength_info_label, 20);
+
+    // Create label to display password strength message.
+    strength_label = gtk_label_new("n/a");
     gtk_box_append(GTK_BOX(vbox), strength_label);
-    gtk_label_set_use_markup(GTK_LABEL(strength_label), true);
     gtk_label_set_justify(GTK_LABEL(strength_label), GTK_JUSTIFY_CENTER);
-    gtk_widget_set_margin_top(strength_label, 20);
+    gtk_widget_add_css_class (strength_label, "bold-font");
 
     // Create strength "progress" bar.
     strength_bar = gtk_progress_bar_new();
@@ -121,27 +125,33 @@ static void create_strength_display_section(GtkWidget *vbox, Widgets *widgets) {
     gtk_widget_set_margin_end(strength_bar, 50);
 
     // Add widget pointers to struct.
+    widgets->strength_info_label = strength_info_label;
     widgets->strength_label = strength_label;
-    widgets->strength_bar = strength_bar;    
+    widgets->strength_bar = strength_bar;
 }
 
-static void create_result_display_section(GtkWidget *vbox, Widgets *widgets) {
+static void create_pwn_display_section(GtkWidget *vbox, Widgets *widgets) {
 
     // Declare variables.
-    GtkWidget *result_label;
+    GtkWidget *pwn_info_label, *pwn_label;
 
-    // Create result info label.
-    result_label = gtk_label_new("The result will be displayed here");    
-    gtk_box_append(GTK_BOX(vbox), result_label);
-    gtk_label_set_justify(GTK_LABEL(result_label), GTK_JUSTIFY_CENTER);
-    gtk_widget_add_css_class (result_label, "bold-font");
-    gtk_widget_set_margin_top(result_label, 10);
-    gtk_widget_set_margin_bottom(result_label, 20);
-    gtk_widget_set_margin_start(result_label, 20);
-    gtk_widget_set_margin_end(result_label, 20);
+    // Create info label.
+    pwn_info_label = gtk_label_new("Breach database status:");
+    gtk_box_append(GTK_BOX(vbox), pwn_info_label);
+    gtk_widget_set_margin_top(pwn_info_label, 10);
+
+    // Create data breach check result label.
+    pwn_label = gtk_label_new("n/a");
+    gtk_box_append(GTK_BOX(vbox), pwn_label);
+    gtk_label_set_justify(GTK_LABEL(pwn_label), GTK_JUSTIFY_CENTER);
+    gtk_widget_add_css_class (pwn_label, "bold-font");
+    gtk_widget_set_margin_bottom(pwn_label, 20);
+    gtk_widget_set_margin_start(pwn_label, 20);
+    gtk_widget_set_margin_end(pwn_label, 20);
 
     // Add widget pointers to struct.
-    widgets->result_label = result_label;
+    widgets->pwn_info_label = pwn_info_label;
+    widgets->pwn_label = pwn_label;
 }
 
 static void create_password_generator_section(GtkWidget *vbox, Widgets *widgets) {
@@ -181,7 +191,7 @@ static void create_password_generator_section(GtkWidget *vbox, Widgets *widgets)
     length_dropdown = gtk_drop_down_new(G_LIST_MODEL(string_list), NULL);
     gtk_box_append(GTK_BOX(hbox), length_dropdown);
     gtk_drop_down_set_selected(GTK_DROP_DOWN(length_dropdown), 16 - PASSWORD_MIN_LENGTH);
-    gtk_widget_set_size_request(length_dropdown, 60, -1);    
+    gtk_widget_set_size_request(length_dropdown, 60, -1);
 
     // Create character type check buttons:
 
@@ -228,7 +238,7 @@ static void connect_signals(GtkWidget *window, Widgets *widgets) {
 
 // Connect a CSS file to display.
 static void add_css_provider(GtkWidget *window) {
-    GtkCssProvider * provider;
+    GtkCssProvider *provider;
     provider = gtk_css_provider_new ();
     gtk_css_provider_load_from_file (provider, g_file_new_for_path ("./styles/styles.css"));
     gtk_style_context_add_provider_for_display (gtk_widget_get_display (window),
