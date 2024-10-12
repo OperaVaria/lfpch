@@ -15,6 +15,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - name: Install GTK4
+      run: sudo apt install -y libgtk-4-dev
     - name: make all
       run: make all
     - name: make clean

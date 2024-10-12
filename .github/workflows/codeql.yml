@@ -78,6 +78,7 @@ jobs:
     - if: matrix.build-mode == 'manual'
       shell: bash
       run: |
+        sudo apt install -y libgtk-4-dev
         make all
         make clean
         
