@@ -21,7 +21,7 @@ static unsigned int get_random_seed();
 /* Random password generator function.
 Takes password attributes (length, character types to include)
 as arguments + array pointer to store the password. */
-void password_generator(size_t password_length, char *password,
+void password_generator(char *password, size_t password_length,
                         bool lower_include, bool upper_include,
                         bool num_include, bool symbol_include) {
     
@@ -35,14 +35,6 @@ void password_generator(size_t password_length, char *password,
     const char* charsets[4] = {lowercase, uppercase, numbers, symbols};
     size_t charset_lengths[4] = {strlen(lowercase), strlen(uppercase), strlen(numbers), strlen(symbols)};
     bool charset_include[4] = {lower_include, upper_include, num_include, symbol_include};
-
-    // Count how many character types are included.
-    int included_charsets = 0;
-    for (int i = 0; i < 4; i++) {
-        if (charset_include[i]) {
-            included_charsets++;
-        }
-    }
 
     // Set a "true" random seed for rand(). Source: x86 processor's DRNG.
     srand(get_random_seed());

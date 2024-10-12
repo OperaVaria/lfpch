@@ -112,7 +112,7 @@ void generate_callback(GtkWidget *button, gpointer data) {
     }
 
     // Call password generator function.
-    password_generator(password.length, password.gen_data,
+    password_generator(password.gen_data, password.length,
                        lower_include, upper_include, num_include, symbol_include);
 
     // Display newly generated password.

@@ -15,7 +15,7 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 // Header files.
 #include <stdlib.h>
 
-void password_generator(size_t password_length, char *password,
+void password_generator(char *password, size_t password_length,
                         bool lower_include, bool upper_include,
                         bool num_include, bool symbol_include);
 
