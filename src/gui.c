@@ -50,9 +50,10 @@ void activate(GtkApplication *app, gpointer data) {
     // Connect callback functions.
     connect_signals(window, widgets);
 
-    // Add CSS styling,
+    // Add CSS styling.
     add_css_provider(window);
 
+    // Raise window to user.
     gtk_window_present(GTK_WINDOW(window));
 }
 
@@ -145,7 +146,6 @@ static void create_pwn_display_section(GtkWidget *vbox, Widgets *widgets) {
     gtk_box_append(GTK_BOX(vbox), pwn_label);
     gtk_label_set_justify(GTK_LABEL(pwn_label), GTK_JUSTIFY_CENTER);
     gtk_widget_add_css_class (pwn_label, "bold-font");
-    gtk_widget_set_margin_bottom(pwn_label, 20);
     gtk_widget_set_margin_start(pwn_label, 20);
     gtk_widget_set_margin_end(pwn_label, 20);
 
@@ -164,6 +164,7 @@ static void create_password_generator_section(GtkWidget *vbox, Widgets *widgets)
     // Create generator label.
     generator_label = gtk_label_new("Password generator settings:");
     gtk_box_append(GTK_BOX(vbox), generator_label);
+    gtk_widget_set_margin_top(generator_label, 20);
     gtk_widget_set_margin_start(generator_label, 10);
     gtk_widget_set_margin_end(generator_label, 10);
 
@@ -187,7 +188,8 @@ static void create_password_generator_section(GtkWidget *vbox, Widgets *widgets)
         gtk_string_list_append(string_list, conversion_buffer);
     }
 
-    // Create dropdown menu for password length, default : default : 16 char.
+    /* Create dropdown menu to select password length.
+    Default value:  16 chars. */
     length_dropdown = gtk_drop_down_new(G_LIST_MODEL(string_list), NULL);
     gtk_box_append(GTK_BOX(hbox), length_dropdown);
     gtk_drop_down_set_selected(GTK_DROP_DOWN(length_dropdown), 16 - PASSWORD_MIN_LENGTH);
@@ -238,11 +240,9 @@ static void connect_signals(GtkWidget *window, Widgets *widgets) {
 
 // Connect a CSS file to display.
 static void add_css_provider(GtkWidget *window) {
-    GtkCssProvider *provider;
-    provider = gtk_css_provider_new ();
+    GtkCssProvider *provider = gtk_css_provider_new ();
     gtk_css_provider_load_from_file (provider, g_file_new_for_path ("./styles/styles.css"));
     gtk_style_context_add_provider_for_display (gtk_widget_get_display (window),
                                                 GTK_STYLE_PROVIDER (provider),
                                                 GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 }
-

@@ -20,7 +20,7 @@ static unsigned int get_random_seed();
 
 /* Random password generator function.
 Takes password attributes (length, character types to include)
-as arguments + array pointer to store the password. */
+as arguments + char array pointer to store the password. */
 void password_generator(char *password, size_t password_length,
                         bool lower_include, bool upper_include,
                         bool num_include, bool symbol_include) {
@@ -31,7 +31,7 @@ void password_generator(char *password, size_t password_length,
     const char numbers[] = "0123456789";
     const char symbols[] = "!@#$%^&*()_+-=[]{}|;:,.<>?";
 
-    // Create an array of charset pointers, length values, and include booleans.
+    // Create arrays of charset pointers, length values, and include booleans.
     const char* charsets[4] = {lowercase, uppercase, numbers, symbols};
     size_t charset_lengths[4] = {strlen(lowercase), strlen(uppercase), strlen(numbers), strlen(symbols)};
     bool charset_include[4] = {lower_include, upper_include, num_include, symbol_include};
@@ -40,7 +40,7 @@ void password_generator(char *password, size_t password_length,
     srand(get_random_seed());
 
     // Loop to fill the output array one-by-one with random characters.
-    for (size_t i = 0; i < password_length; i++) {
+    for (int i = 0; i < password_length; i++) {
 
         // Randomly select a character type (only if marked as included).
         int charset_index;
@@ -56,8 +56,8 @@ void password_generator(char *password, size_t password_length,
     // Null terminate the array.
     password[password_length] = '\0';
 
-    /* Randomly swap in a character from every char type to ensure
-    all are present. */
+    /* Randomly swap in a character from every selected 
+    char type to ensure all are present. */
     for (int i = 0; i < 4; i++) {
         if (charset_include[i]) {
             int replace_index = rand() % password_length;
@@ -67,13 +67,12 @@ void password_generator(char *password, size_t password_length,
     }
 }
 
-/* Generate a "true" random seed with an x86 processor's DRNG.
+/* Generate a "true" random seed with the x86 processor's DRNG.
 Returns random number as unsigned int. */
 static unsigned int get_random_seed() {
 
     // Declare variables.
-    int tries = 0;
-    int status;
+    int status, tries = 0;
     unsigned int result;
 
     /* Get random integer with the RDSEED instruction,

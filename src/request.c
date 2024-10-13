@@ -24,9 +24,9 @@ string, and a Memory struct as arguments. Returns status code.*/
 int curl_session(const char *url, const char *custom_header, Memory *memory_ptr) {
 
     // Declare cURL variables.
+    struct curl_slist *headers = NULL;
     CURL *curl;
     CURLcode res;
-    struct curl_slist *headers = NULL;
 
     // Init session + error handling.
     curl = curl_easy_init();

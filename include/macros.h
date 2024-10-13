@@ -23,4 +23,12 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 #define PASSWORD_MIN_LENGTH 8
 #define STRONG_PASSWORD_LENGTH 16
 
+/* The "'" format specifier (thousand separated number) does not work
+on Windows, therefore it is not implemented in the pwn result message. */
+#ifdef _WIN32
+    #define PWN_RES_MSG "Warning! This password has been breached at least %ld times!"
+#else
+    #define PWN_RES_MSG "Warning! This password has been breached at least %'ld times!"
+#endif
+
 #endif

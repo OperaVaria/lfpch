@@ -9,48 +9,44 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 */
 
 // Header files.
+#include <stdio.h>
 #include <gtk/gtk.h>
 #include "checker.h"
 #include "generator.h"
-#include "gui.h"
 #include "callback.h"
 #include "types.h"
 
 // Static function prototypes.
-static const char* get_strength_color(int strength);
-static const char* get_strength_description(int strength);
+static void reset_result_widgets(Widgets *widgets_ptr, const char *display_text); 
+static const char *get_strength_color(int strength);
+static const char *get_strength_description(int strength);
 
 /* Callback function when a password is submitted to be checked
 (submit button or enter key press). */
-void check_callback(GtkWidget *button, gpointer data) {
+void check_callback(GtkWidget *widget, gpointer data) {
 
     // Declare variables.
+    Password password;
     Widgets *widgets_ptr;
     char strength_msg_buff[128], pwn_msg_buff[128];
 
     // (Re)cast to Widgets struct.
     widgets_ptr = (Widgets *)data;
 
-    // Create Password struct instance, store password data and length.
-    Password password;
+    // Store password data and length in Password struct.
     password.input_data = gtk_editable_get_text(GTK_EDITABLE(widgets_ptr->password_entry));
     password.length = strlen(password.input_data);
 
-    /* Check if no password entered or password is too long. Display warning to labels,
-    reset strength bar, abort. */
+    /* Check if no password entered or password is too long.
+    Display warning to labels, reset strength bar, abort. */
     if (password.input_data[0] == '\0') {
-        gtk_label_set_text(GTK_LABEL(widgets_ptr->pwn_label), "No password entered!");
-        gtk_label_set_text(GTK_LABEL(widgets_ptr->strength_label), "No password entered!");
-        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(widgets_ptr->strength_bar), 0.0);
+        reset_result_widgets(widgets_ptr, "No password entered!"); 
     } else if (password.length > PASSWORD_MAX_LENGTH) {
-        gtk_label_set_text(GTK_LABEL(widgets_ptr->pwn_label), "Password too long!");
-        gtk_label_set_text(GTK_LABEL(widgets_ptr->strength_label), "Password too long!");
-        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(widgets_ptr->strength_bar), 0.0);
+        reset_result_widgets(widgets_ptr, "Password too long!"); 
+    
+    } else { // Proceed normally.
 
-    // Else: proceed.
-    } else {
-
-        // Call backend processes.
+        // Call backend processes (strength and pwn check).
         password.strength_score = password_strength_check(password.input_data, password.length);
         password.pwn_num = pwn_check_process(&password);
 
@@ -70,10 +66,9 @@ void check_callback(GtkWidget *button, gpointer data) {
 
         // Create pwn result message based on result.
         if (password.pwn_num != 0) {
-            snprintf(pwn_msg_buff, sizeof(pwn_msg_buff),
-                     "Warning! This password was breached atleast %ld times!", password.pwn_num);
+            snprintf(pwn_msg_buff, sizeof(pwn_msg_buff), PWN_RES_MSG, password.pwn_num);
         } else {
-            snprintf(pwn_msg_buff, sizeof(pwn_msg_buff), "Password not known to be hacked!");
+            snprintf(pwn_msg_buff, sizeof(pwn_msg_buff), "Password is not known to be hacked!");
         }
 
         // Update pwn label.
@@ -85,11 +80,11 @@ void check_callback(GtkWidget *button, gpointer data) {
 void generate_callback(GtkWidget *button, gpointer data) {
 
     // Declare variables.
-    bool lower_include, upper_include, num_include, symbol_include;
-    unsigned int selection_index;
     Password password;
     Widgets *widgets_ptr;
-
+    unsigned int selection_index;
+    bool lower_include, upper_include, num_include, symbol_include;
+    
     // (Re)cast to Widgets struct.
     widgets_ptr = (Widgets *)data;
 
@@ -100,12 +95,12 @@ void generate_callback(GtkWidget *button, gpointer data) {
     password.length = selection_index + PASSWORD_MIN_LENGTH;
 
     // Get the status of the checkboxes.
-    lower_include = gtk_check_button_get_active (GTK_CHECK_BUTTON(widgets_ptr->lower_check));
-    upper_include = gtk_check_button_get_active (GTK_CHECK_BUTTON(widgets_ptr->upper_check));
-    num_include = gtk_check_button_get_active (GTK_CHECK_BUTTON(widgets_ptr->num_check));
-    symbol_include = gtk_check_button_get_active (GTK_CHECK_BUTTON(widgets_ptr->symbol_check));
+    lower_include = gtk_check_button_get_active(GTK_CHECK_BUTTON(widgets_ptr->lower_check));
+    upper_include = gtk_check_button_get_active(GTK_CHECK_BUTTON(widgets_ptr->upper_check));
+    num_include = gtk_check_button_get_active(GTK_CHECK_BUTTON(widgets_ptr->num_check));
+    symbol_include = gtk_check_button_get_active(GTK_CHECK_BUTTON(widgets_ptr->symbol_check));
 
-    // If all checks set to off: activate lower as a default.
+    // If all checkboxes set to off: activate lower case as a default.
     if (!lower_include && !upper_include && !num_include && !symbol_include) {
         lower_include = true;
         gtk_check_button_set_active(GTK_CHECK_BUTTON(widgets_ptr->lower_check), true);
@@ -118,10 +113,8 @@ void generate_callback(GtkWidget *button, gpointer data) {
     // Display newly generated password.
     gtk_editable_set_text(GTK_EDITABLE(widgets_ptr->password_entry), password.gen_data);
 
-    // Reset info widgets to default.
-    gtk_label_set_text(GTK_LABEL(widgets_ptr->pwn_label), "n/a");
-    gtk_label_set_text(GTK_LABEL(widgets_ptr->strength_label), "n/a");
-    gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(widgets_ptr->strength_bar), 0.0);
+    // Reset result widgets to default. 
+    reset_result_widgets(widgets_ptr, "n/a"); 
 }
 
 // Callback function on window destroy: free memory allocated for widgets.
@@ -130,10 +123,18 @@ void on_window_destroy(GtkWidget *widget, gpointer data) {
     g_free(widgets_ptr);
 }
 
-// HELPER FUNCTIONS:
+/* HELPER FUNCTIONS: */
+
+/* Function to reset the result display widgets (pwn_label, strength_label,
+strength_bar) to a default. Arguments: Widgets pointer, text to display. */
+static void reset_result_widgets(Widgets *widgets_ptr, const char *display_text) {
+    gtk_label_set_text(GTK_LABEL(widgets_ptr->pwn_label), display_text);
+    gtk_label_set_text(GTK_LABEL(widgets_ptr->strength_label),display_text);
+    gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(widgets_ptr->strength_bar), 0.0);
+}
 
 // Function to get color based on strength score.
-static const char* get_strength_color(int strength) {
+static const char *get_strength_color(int strength) {
     if (strength < 20) return "red";
     if (strength < 40) return "orange";
     if (strength < 60) return "yellow";
@@ -142,7 +143,7 @@ static const char* get_strength_color(int strength) {
 }
 
 // Function to get description based on strength score.
-static const char* get_strength_description(int strength) {
+static const char *get_strength_description(int strength) {
     if (strength < 20) return "Very Weak";
     if (strength < 40) return "Weak";
     if (strength < 60) return "Moderate";

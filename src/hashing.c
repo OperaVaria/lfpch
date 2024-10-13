@@ -32,7 +32,7 @@ void convert_digest(const unsigned char *hex_arr, char *output_arr) {
     output_arr[SHA_DIGEST_LENGTH*2] = '\0';
 }
 
-/* Splits an copies digest string into a prefix (first 5 characters)
+/* Splits and copies digest string into a prefix (first 5 characters)
 and a suffix (remaining) array. Needed for the haveibeenpwned.com password API. */
 void split_digest_str(const char *digest, char *prefix, char *suffix) {
 

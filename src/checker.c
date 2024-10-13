@@ -25,9 +25,9 @@ static long int haveibeenpwned_res_hand(const char *response, const char *suffix
 /* Processes backend function calls to check the number of
 leaked data breaches the password was part of. Uses the
 haveibeenpwned.com password API. Takes a Password struct pointer
-as argument, returns the "pwn" count. */
+as argument, returns the "pwn" count converted to a (long) int. */
 long int pwn_check_process(Password *password_ptr) {
-
+    
     /* HASHING */
 
     // Call hashing functions.
@@ -37,8 +37,12 @@ long int pwn_check_process(Password *password_ptr) {
 
     /* REQUEST */
 
-    // Build request url.
+    // Declare variables.
     char url[64];
+    int curl_response; 
+    long int pwn_num;
+
+    // Build request url.
     sprintf(url, "https://api.pwnedpasswords.com/range/%s", password_ptr->prefix);
 
     /* Declare header string. Adds padding to the haveibeenpwned.com response
@@ -51,14 +55,14 @@ long int pwn_check_process(Password *password_ptr) {
     memory.size = 0;
 
     // Call cURL session function with error handling.
-    int curl_response = curl_session(url, header_data, &memory);
+    curl_response = curl_session(url, header_data, &memory);
     if (curl_response != 0) {
         fprintf(stderr, "cURL error, code: %d, exiting app.\n", curl_response);
         exit(EXIT_FAILURE);
     }
 
     // Call response handling function to get pwn number.
-    long int pwn_num = haveibeenpwned_res_hand(memory.string, password_ptr->suffix);
+    pwn_num = haveibeenpwned_res_hand(memory.string, password_ptr->suffix);
 
     // Free response string memory allocated in write_chunk_cb().
     free(memory.string);
@@ -69,24 +73,25 @@ long int pwn_check_process(Password *password_ptr) {
 /* Function to handle a haveibeenpwned.com response string.
 Takes the response string and a password hash suffix as arguments.
 Returns the number the password has been in a data breach according to the
-website database (as long int). */
+website's database (as long int). */
 static long int haveibeenpwned_res_hand(const char *response, const char *suffix) {
 
-    // Declare return variable.
+    // Declare variables.
+    char *line_ptr, *start_ptr, *end_ptr;
     long int pwn_num;
 
     //Search for suffix in response string.
-    char *line_ptr = strstr(response, suffix);
+    line_ptr = strstr(response, suffix);
 
     if (line_ptr != NULL) {
 
         /* If found, set pointers to the start and end
-        of the pwn number. */
-        char *start_ptr = strchr(line_ptr, ':');
-        char *end_ptr = strchr(line_ptr, '\r');
+        of the pwn number. Line format: suffix:number\r\n */
+        start_ptr = strchr(line_ptr, ':');
+        end_ptr = strchr(line_ptr, '\r');
         start_ptr++; // Move pointer over ':'.
 
-        // Convert numbers to long int.
+        // Convert number character(s) to long int.
         pwn_num = strtol(start_ptr, &end_ptr, 10);
 
     }
@@ -98,14 +103,14 @@ static long int haveibeenpwned_res_hand(const char *response, const char *suffix
     return pwn_num;
 }
 
-/* Function to calculate password strength. Scores between 0-100 based on length and
-character type variety. Takes the password and its length as arguments.
-Returns the score. */
+/* Function to calculate password strength. Scores between 0-100 based on
+length and character type variety. Takes the password and its length as
+arguments, returns the score. */
 int password_strength_check(const char* password, size_t length) {
 
     // Initialize variables.
     int score = 0, lowercase_count = 0, uppercase_count = 0,
-        number_count =0, symbol_count = 0;
+        number_count = 0, symbol_count = 0;
 
     // Length score (40 points).
     score += (length >= STRONG_PASSWORD_LENGTH) ? 40 : (length * 40 / STRONG_PASSWORD_LENGTH);
@@ -128,6 +133,7 @@ int password_strength_check(const char* password, size_t length) {
     if (length < PASSWORD_MIN_LENGTH) {
         score = score * length / PASSWORD_MIN_LENGTH;
     }
-
+    
+    // Return a score no higher than 100.
     return (score > 100) ? 100 : score;
 }

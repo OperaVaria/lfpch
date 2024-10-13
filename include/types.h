@@ -13,32 +13,36 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 #define TYPES_H
 
 // Header files.
+#include <stddef.h>
 #include <gtk/gtk.h>
 #include <openssl/sha.h>
 #include "macros.h"
 
-/* Memory location for a string.
+/* Dynamic memory location for a string.
 Mainly used by the cURL callback function. */
 typedef struct Memory {
     char *string;
     size_t size;
 } Memory;
 
-// Struct to store all password data needed for the operation.
+// Struct to store all password data needed for the operations.
 typedef struct Password {
+    // Character arrays:
     char const *input_data;
     char gen_data[PASSWORD_MAX_LENGTH + 1];
     unsigned char digest[SHA_DIGEST_LENGTH];
     char digest_str[DIGEST_STRING_LENGTH];
     char prefix[PREFIX_LENGTH];
     char suffix[SUFFIX_LENGTH];
+    // Integers:
     size_t length;
     int strength_score;
     long int pwn_num;
 } Password;
 
 /* Struct to store GTK widget pointers.
-Used to pass multiple gpointers to GUI callback functions. */
+Used to pass multiple gpointers to GUI callback functions.
+Order: location of the widget on screen, up to down. */
 typedef struct Widgets {
     GtkWidget *instruction_label;
     GtkWidget *password_entry;

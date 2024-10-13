@@ -13,8 +13,10 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 #define GENERATOR_H
 
 // Header files.
-#include <stdlib.h>
+#include <stddef.h>
+#include <stdbool.h>
 
+// Function prototypes.
 void password_generator(char *password, size_t password_length,
                         bool lower_include, bool upper_include,
                         bool num_include, bool symbol_include);

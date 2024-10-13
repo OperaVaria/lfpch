@@ -13,6 +13,7 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 #define CHECKER_H
 
 // Header files.
+#include <stddef.h>
 #include "types.h"
 
 // Function prototypes.

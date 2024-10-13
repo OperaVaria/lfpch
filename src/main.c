@@ -4,20 +4,23 @@ Lightning-Fast Password Check v0.0.1
 2024/10/XX
 By OperaVaria, 2024
 
-LFPCh is a small, cross-platform GUI application to check if your password is safe to use. The program conducts a two-step security check:
-In step one, the password's quality is evaluated based on it's length and character variety. In step two, the app checks whether
-the password was part of an earlier data breach through the haveibeenpwned.com API. The application also includes a random password generator,
-based on a "true" random seed provided by the x86 processor's DRNG unit.
+LFPCh is a small, cross-platform GUI application to check if your password is safe to use.
+The program conducts a two-step security check: In step one, the password's quality is evaluated
+based on it's length and character variety. In step two, the app checks whether
+the password was part of an earlier data breach through the haveibeenpwned.com API.
+The application also includes a random password generator,based on a "true" random seed
+provided by the x86 processor's DRNG unit.
 
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
-License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
-version.
+This program is free software: you can redistribute it and/or modify it under the terms
+of the GNU General Public License as published by the Free Software Foundation,
+either version 3 of the License, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
-warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with this program. If not,
-see <https://www.gnu.org/licenses/>
+You should have received a copy of the GNU General Public License along with this program.
+If not, see <https://www.gnu.org/licenses/>
 
 */
 
