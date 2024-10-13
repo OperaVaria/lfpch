@@ -8,9 +8,7 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 
 */
 
-#include <stdbool.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <immintrin.h>
 #include "generator.h"

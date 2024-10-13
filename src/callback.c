@@ -9,7 +9,6 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 */
 
 // Header files.
-#include <stdio.h>
 #include <gtk/gtk.h>
 #include "checker.h"
 #include "generator.h"

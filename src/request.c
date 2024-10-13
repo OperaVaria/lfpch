@@ -9,8 +9,6 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 */
 
 // Header files.
-#include <stdlib.h>
-#include <string.h>
 #include <curl/curl.h>
 #include "request.h"
 #include "types.h"
