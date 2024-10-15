@@ -116,7 +116,7 @@ int password_strength_check(const char* password, size_t length) {
     score += (length >= STRONG_PASSWORD_LENGTH) ? 40 : (length * 40 / STRONG_PASSWORD_LENGTH);
 
     // Calculate character type variety.
-    for (int i = 0; i < length; i++) {
+    for (size_t i = 0; i < length; i++) {
         if (islower(password[i])) lowercase_count++;
         else if (isupper(password[i])) uppercase_count++;
         else if (isdigit(password[i])) number_count++;

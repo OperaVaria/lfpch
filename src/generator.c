@@ -38,7 +38,7 @@ void password_generator(char *password, size_t password_length,
     srand(get_random_seed());
 
     // Loop to fill the output array one-by-one with random characters.
-    for (int i = 0; i < password_length; i++) {
+    for (size_t i = 0; i < password_length; i++) {
 
         // Randomly select a character type (only if marked as included).
         int charset_index;
