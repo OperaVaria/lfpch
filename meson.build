@@ -1,8 +1,12 @@
 # Meson build file for the "Lightning-Fast Password Check" project
+
+# Project call
 project('lfpch', 'c',
         version : '1.0.0',
-        license : 'GPL3',
-        default_options : ['buildtype=release', 'c_std=gnu17'])
+        license : 'GPL-3.0-only',
+        license_files : 'COPYING.md',
+        default_options : ['buildtype=release', 'c_std=gnu17', 'c_args=-mrdseed']
+        )
 
 # Only build if the target CPU is x86
 is_x86 = host_machine.cpu_family().startswith('x86')
@@ -10,35 +14,52 @@ if not is_x86
   error('This application currently only supports x86 architecture.')
 endif
 
-# Compiler and linker arguments
-extra_args = ['-mrdseed'] # rdseed for random generation.
-extra_link_args = []
-if host_machine.system() == 'windows'  
-  extra_link_args += ['-mwindows'] # Add -mwindows on Windows.
-endif
-
 # Dependencies
-gtk_dep = dependency('gtk4')
-crypto_dep = dependency('libcrypto')
-curl_dep = dependency('libcurl')
+glib_dep = dependency('glib-2.0')
+gtk4_dep = dependency('gtk4')
+libcrypto_dep = dependency('libcrypto')
+libcurl_dep = dependency('libcurl')
+deps = [glib_dep, gtk4_dep, libcrypto_dep, libcurl_dep]
 
 # Directories
 subdir('src')
+subdir('resources')
 inc = include_directories('include')
+if host_machine.system() == 'windows'
+  inst_dir = get_option('prefix') / 'Tools' / 'lfpch'
+else
+  inst_dir = fs.expanduser('~/lfpch')
+endif
 
 # Executable
 executable('lfpch',
            sources : src,
            include_directories: inc,
-           dependencies : [gtk_dep, crypto_dep, curl_dep],
-           c_args : extra_args,
-           link_args : extra_link_args,
+           dependencies : deps,
            win_subsystem : 'windows',
-           install : true)
+           install : true,
+           install_dir: inst_dir
+           )
 
-# Install files
-install_data('COPYING.md', install_dir : get_option('datadir') / 'licenses' / 'lfpch')
-install_data('resources/styles/lfpch.css', install_dir : get_option('datadir') / 'styles' / 'lfpch')
+# Install
+install_subdir('resources', install_dir : inst_dir)
+install_data('COPYING.md', install_dir : inst_dir / 'license')
 
 # Tests
-test('generator', executable('gen_test', 'tests/gen_test.c'))
+test('connection', executable('conn_test',
+                              sources: ['tests/conn_test.c', 'src/request.c'],
+                              include_directories: inc,
+                              dependencies : deps
+                              ))
+
+test('DRNG', executable('drng_test',
+                        sources: ['tests/drng_test.c'],
+                        include_directories: inc,
+                        dependencies : deps
+                        ))
+
+test('generator', executable('gen_test',
+                              sources: ['tests/gen_test.c', 'src/checker.c', 'src/generator.c', 'src/hashing.c', 'src/request.c'],
+                              include_directories: inc,
+                              dependencies : deps
+                              ))
