@@ -33,6 +33,7 @@ void password_generator(char *password, size_t password_length,
     const char* charsets[4] = {lowercase, uppercase, numbers, symbols};
     size_t charset_lengths[4] = {strlen(lowercase), strlen(uppercase), strlen(numbers), strlen(symbols)};
     bool charset_include[4] = {lower_include, upper_include, num_include, symbol_include};
+    bool charset_missing[4] = {lower_include, upper_include, num_include, symbol_include};
 
     // Set a "true" random seed for rand(). Source: x86 processor's DRNG.
     srand(get_random_seed());
@@ -46,6 +47,9 @@ void password_generator(char *password, size_t password_length,
             charset_index = rand() % 4;
         } while (!charset_include[charset_index]);
 
+        // Set the charset's "missing" boolean to false.
+        charset_missing[charset_index] = false;
+
         // Select a random character from the chosen character set
         int char_index = rand() % charset_lengths[charset_index];
         password[i] = charsets[charset_index][char_index];
@@ -54,10 +58,10 @@ void password_generator(char *password, size_t password_length,
     // Null terminate the array.
     password[password_length] = '\0';
 
-    /* Randomly swap in a character from every selected 
-    char type to ensure all are present. */
+    /* Randomly swap in a character from the missing 
+    char type(s) to (almost) ensure all are present. */
     for (int i = 0; i < 4; i++) {
-        if (charset_include[i]) {
+        if (charset_missing[i]) {
             int replace_index = rand() % password_length;
             int char_index = rand() % charset_lengths[i];
             password[replace_index] = charsets[i][char_index];
