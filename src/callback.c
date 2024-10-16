@@ -16,7 +16,7 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 #include "types.h"
 
 // Static function prototypes.
-static void reset_result_widgets(Widgets *widgets_ptr, const char *display_text); 
+static void reset_result_widgets(Widgets *widgets_ptr, const char *display_text);
 static const char *get_strength_color(int strength);
 static const char *get_strength_description(int strength);
 
@@ -39,10 +39,10 @@ void check_callback(GtkWidget *widget, gpointer data) {
     /* Check if no password entered or password is too long.
     Display warning to labels, reset strength bar, abort. */
     if (password.input_data[0] == '\0') {
-        reset_result_widgets(widgets_ptr, "No password entered!"); 
+        reset_result_widgets(widgets_ptr, "No password entered!");
     } else if (password.length > PASSWORD_MAX_LENGTH) {
-        reset_result_widgets(widgets_ptr, "Password too long!"); 
-    
+        reset_result_widgets(widgets_ptr, "Password too long!");
+
     } else { // Proceed normally.
 
         // Call backend processes (strength and pwn check).
@@ -65,7 +65,17 @@ void check_callback(GtkWidget *widget, gpointer data) {
 
         // Create pwn result message based on result.
         if (password.pwn_num != 0) {
-            snprintf(pwn_msg_buff, sizeof(pwn_msg_buff), PWN_RES_MSG, password.pwn_num);
+            /* The "'" format specifier (thousand separated number) does not work
+            on Windows, therefore it is not implemented in the pwn result message. */
+            #ifdef _WIN32
+                snprintf(pwn_msg_buff, sizeof(pwn_msg_buff),
+                         "Warning! This password has been breached at least %ld times!",
+                         password.pwn_num);
+            #else
+                snprintf(pwn_msg_buff, sizeof(pwn_msg_buff),
+                         "Warning! This password has been breached at least %'ld times!",
+                         password.pwn_num);
+            #endif
         } else {
             snprintf(pwn_msg_buff, sizeof(pwn_msg_buff), "Password is not known to be hacked!");
         }
@@ -83,7 +93,7 @@ void generate_callback(GtkWidget *button, gpointer data) {
     Widgets *widgets_ptr;
     unsigned int selection_index;
     bool lower_include, upper_include, num_include, symbol_include;
-    
+
     // (Re)cast to Widgets struct.
     widgets_ptr = (Widgets *)data;
 
@@ -112,8 +122,8 @@ void generate_callback(GtkWidget *button, gpointer data) {
     // Display newly generated password.
     gtk_editable_set_text(GTK_EDITABLE(widgets_ptr->password_entry), password.gen_data);
 
-    // Reset result widgets to default. 
-    reset_result_widgets(widgets_ptr, "n/a"); 
+    // Reset result widgets to default.
+    reset_result_widgets(widgets_ptr, "n/a");
 }
 
 // Callback function on window destroy: free memory allocated for widgets.
