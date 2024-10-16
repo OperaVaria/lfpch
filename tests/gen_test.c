@@ -1,6 +1,6 @@
 /*
 
-generator_test.c
+gen_test.c
 
 Test if the password generator consistently generates maximum score passwords.
 
@@ -20,12 +20,12 @@ int main() {
     size_t length = 16;
     int score;
 
-    // Call functions 100 times and assert max score.
-    for(int i = 1; i == 100; i++) {
+    // Call functions 1000 times and assert max score.
+    for (int i = 0; i < 1000; i++) {
         password_generator(password, length, true, true, true, true);
         score = password_strength_check(password, length);
-        assert(score == 100);
-        printf("Loop no. %d successful.\n", i);
+        printf("Loop no. %d, Score: %d, Password: %s\n", i + 1, score, password);
+        assert(score == 100);       
     }
 
     printf("Test successful!\n");
