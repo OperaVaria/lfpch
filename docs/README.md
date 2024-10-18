@@ -10,10 +10,17 @@ in accordance with the user's needs. The random generation is based on a "true" 
 
 LFCh was written entirely in C with speed and efficiency in mind. Its simple, GTK4 UI aims to provide a clean and easy-to-use interface.
 
+## Screenshots
+
+<p align="center">
+  <img src="./assets/screenshots/lnx_screen.jpg" alt="Linux Screenshot" height=auto width="700">
+  <img src="./assets/screenshots/win_screen.jpg" alt="Windows Screenshot" height=auto width="700">
+</p>
+
 ## Installation
 
 The building and installation process is done via the [Meson build system](https://mesonbuild.com/index.html), version 1.5.0 is required. Meson does include
-a built-in pseudo-package manager called [WrapDB](https://mesonbuild.com/Wrapdb-projects.html) to download and compile dependencies, but this takes a very long time to complete. **We recommend the following steps instead:**
+a built-in pseudo-package manager called [WrapDB](https://mesonbuild.com/Wrapdb-projects.html) to download and compile dependencies, but this takes a very long time to complete. **We recommend these steps instead:**
 
 ### Dependencies
 
@@ -41,20 +48,21 @@ pacman -S mingw-w64-ucrt-x86_64-glib2 mingw-w64-ucrt-x86_64-gtk4 mingw-w64-ucrt-
 
 ### Build and Install
 
-LFPCh can be built and installed on both OS families with Meson by entering the following into the terminal:
+LFPCh can be built and installed on both OS families with Meson. After downloading and unpacking the source directory, enter the following into the terminal:
+
 ```bash
-cd /project/source/folder
+cd /project/source/directory
 meson setup builddir
 meson install -C builddir
 ```
 
-On Linux, the app installs to the conventional Unix filesystem location ('/usr/bin' and '/usr/share'). On Windows, the target directory for all files is 'C:\Tools\lfpch'.
+On Linux, the app installs to the conventional Unix filesystem locations ('/usr/bin' and '/usr/share'), and can be run with the "lfpch" command. On Windows, the target directory for all files is 'C:\Tools\lfpch'.
 
 ## Other
 
-Tested on: Ubuntu 24.04, MX Linux 23.4, and Windows 11.
+**Tested on:** Ubuntu 24.04, MX Linux 23.4, and Windows 11.
 
-Note: The application's random generation depends on an x86 specific assembly instruction, therefore it will not work on different architectures.
+**Note:** The application's random generator depends on an x86 specific assembly instruction, therefore it will not work on different architectures.
 
 App icon: [Password SVG Vector](https://www.svgrepo.com/svg/475163/password),  under [![License: CC0-1.0](https://licensebuttons.net/l/zero/1.0/80x15.png)](http://creativecommons.org/publicdomain/zero/1.0/) license.
 
