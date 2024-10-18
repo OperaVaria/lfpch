@@ -241,7 +241,12 @@ static void connect_signals(GtkWidget *window, Widgets *widgets) {
 // Connect a CSS file to display.
 static void add_css_provider(GtkWidget *window) {
     GtkCssProvider *provider = gtk_css_provider_new ();
-    gtk_css_provider_load_from_file (provider, g_file_new_for_path ("./resources/styles.css"));
+    // Different directories on Windows and Unix systems.
+    #ifdef _WIN32
+        gtk_css_provider_load_from_file (provider, g_file_new_for_path ("./resources/styles.css"));
+    #else
+        gtk_css_provider_load_from_file (provider, g_file_new_for_path ("/usr/share/lfpch/styles.css"));
+    #endif    
     gtk_style_context_add_provider_for_display (gtk_widget_get_display (window),
                                                 GTK_STYLE_PROVIDER (provider),
                                                 GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);

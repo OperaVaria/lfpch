@@ -2,13 +2,13 @@
 
 # Project call
 project('lfpch', 'c',
-        version : '1.0.0',
+        version : '0.0.1',
         license : 'GPL-3.0-only',
         license_files : 'COPYING.md',
         default_options : ['buildtype=release', 'c_std=gnu17', 'c_args=-mrdseed']
         )
 
-# Only build if the target CPU is x86
+# Only build if the target CPU is x86:
 is_x86 = host_machine.cpu_family().startswith('x86')
 if not is_x86
   error('This application currently only supports x86 architecture.')
@@ -21,15 +21,27 @@ libcrypto_dep = dependency('libcrypto')
 libcurl_dep = dependency('libcurl')
 deps = [glib_dep, gtk4_dep, libcrypto_dep, libcurl_dep]
 
-# Directories
+# Project directories
 subdir('src')
 subdir('resources')
 inc = include_directories('include')
+
+# Install directories
 if host_machine.system() == 'windows'
-  inst_dir = get_option('prefix') / 'Tools' / 'lfpch'
+  bin_dir = get_option('prefix') / 'Tools' / 'lfpch'
+  data_dir = bin_dir / 'resources'
+  license_dir = bin_dir / 'license'
+  icon_dir = data_dir
+  desktop_dir = data_dir
 else
-  inst_dir = fs.expanduser('~/lfpch')
+  bin_dir = '/usr' / 'bin'
+  share_dir = '/usr' / 'share'
+  data_dir =  share_dir / 'lfpch'
+  license_dir = share_dir / 'doc' / 'lfpch'
+  icon_dir = share_dir / 'icons' / 'hicolor' / 'scalable' / 'apps'
+  desktop_dir = share_dir / 'applications'
 endif
+
 
 # Executable
 executable('lfpch',
@@ -38,12 +50,14 @@ executable('lfpch',
            dependencies : deps,
            win_subsystem : 'windows',
            install : true,
-           install_dir: inst_dir
+           install_dir: bin_dir
            )
 
 # Install
-install_subdir('resources', install_dir : inst_dir)
-install_data('COPYING.md', install_dir : inst_dir / 'license')
+install_data('resources/styles.css', install_dir : data_dir)
+install_data('COPYING.md', install_dir : license_dir)
+install_data('resources/icon.svg', rename: 'lfpch.svg', install_dir : icon_dir)
+install_data('resources/lfpch.desktop', install_dir : desktop_dir)
 
 # Tests
 test('connection', executable('conn_test',

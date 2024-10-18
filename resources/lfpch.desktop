@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=LFPCh
+Comment=Lightning-Fast Password Check
+Type=Application
+Icon=/usr/share/icons/hicolor/scalable/apps/lfpch.svg
+Terminal=false
+Exec=lfpch
+StartupNotify=true
