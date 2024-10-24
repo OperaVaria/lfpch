@@ -64,7 +64,7 @@ On Linux, the app installs to the conventional Unix filesystem locations ('/usr/
 
 **Note:** The application's random generator depends on an x86 specific assembly instruction, therefore it will not work on different architectures.
 
-App icon: [Password SVG Vector](https://www.svgrepo.com/svg/475163/password),  under [![License: CC0-1.0](https://licensebuttons.net/l/zero/1.0/80x15.png)](http://creativecommons.org/publicdomain/zero/1.0/) license.
+App icon from ["Internet & Security icon pack"](https://www.iconfinder.com/iconsets/internet-security-flat-2) by [Kmg Design](https://www.iconfinder.com/kmgdesignid)
 
 **[Contact](mailto:lcs_it@proton.me)**
 

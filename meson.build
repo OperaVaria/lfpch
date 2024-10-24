@@ -38,7 +38,7 @@ else
   share_dir = '/usr' / 'share'
   data_dir =  share_dir / 'lfpch'
   license_dir = share_dir / 'doc' / 'lfpch'
-  icon_dir = share_dir / 'icons' / 'hicolor' / 'scalable' / 'apps'
+  icon_dir = share_dir / 'icons'
   desktop_dir = share_dir / 'applications'
 endif
 
@@ -56,8 +56,12 @@ executable('lfpch',
 # Install
 install_data('resources/styles.css', install_dir : data_dir)
 install_data('COPYING.md', install_dir : license_dir)
-install_data('resources/icon.svg', rename: 'lfpch.svg', install_dir : icon_dir)
-install_data('resources/lfpch.desktop', install_dir : desktop_dir)
+if host_machine.system() == 'windows'
+  install_data('resources/icons/ico/lfpch.ico', install_dir : icon_dir)
+else
+  install_data('resources/lfpch.desktop', install_dir : desktop_dir)
+  install_subdir('resources/icons/hicolor', install_dir : icon_dir)
+endif
 
 # Tests
 test('connection', executable('conn_test',
