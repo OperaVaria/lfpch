@@ -2,7 +2,9 @@
 Name=LFPCh
 Comment=Lightning-Fast Password Check
 Type=Application
+Categories=Utility;GTK;Security;
 Exec=lfpch
 Icon=lfpch
 Terminal=false
 StartupNotify=true
+

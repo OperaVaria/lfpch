@@ -47,10 +47,11 @@ endif
 executable('lfpch',
            sources : src,
            include_directories: inc,
+           link_args : ['-s'],
            dependencies : deps,
            win_subsystem : 'windows',
            install : true,
-           install_dir: bin_dir
+           install_dir: bin_dir           
            )
 
 # Install
