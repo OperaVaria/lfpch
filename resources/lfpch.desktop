@@ -7,4 +7,4 @@ Exec=lfpch
 Icon=lfpch
 Terminal=false
 StartupNotify=true
-
+StartupWMClass=org.gtk.lfpch
