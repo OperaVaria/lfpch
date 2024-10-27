@@ -8,7 +8,7 @@ only the first five characters of the password's sha1 hash is ever sent to the h
 even if it is somehow intercepted. The application also includes a random password generator that creates a secure password, customizable
 in accordance with the user's needs. The random generation is based on a "true" random seed provided by the x86 processor's DRNG unit.
 
-LFCh was written entirely in C with speed and efficiency in mind. Its simple, GTK4 UI aims to provide a clean and easy-to-use interface.
+LFPCh was written entirely in C with speed and efficiency in mind. Its simple, GTK4 UI aims to provide a clean and easy-to-use interface.
 
 ## Screenshots
 
@@ -19,7 +19,36 @@ LFCh was written entirely in C with speed and efficiency in mind. Its simple, GT
 
 ## Installation
 
-The building and installation process is done via the [Meson build system](https://mesonbuild.com/index.html), version 1.5.0 is required. Meson does include
+The easiest and cleanest way to install LFPCh is via the binary packages located in the repository's "/bin" directory.
+These are set up to download and install the required dependencies automatically.
+
+### Linux (Debian-based)
+
+Download the latest version of the .deb package from "/bin/Linux", and use you distribution's GUI package installer (e.g. GDebi, Deb Installer etc.),
+or run the following commands in the terminal:
+
+```bash
+cd /location/of/deb_file
+sudo dpkg -i packagename.deb
+```
+
+The app can now be launched form the OS's application menu or by typing the "lfpch" command into the terminal.
+
+### Windows
+
+The Windows installation uses the [MSYS2](https://www.msys2.org/) platform with the UCRT64 environment to get the required dependencies.
+Download the latest version of the .pkg.tar.zst package from "/bin/Windows" and run the following commands in the MYSYS shell:
+
+```bash
+cd /location/of/pkg_file
+pacman -U packagename.pkg.tar.zst
+```
+
+The app can now be launched form the newly created desktop shortcut.
+
+## Building
+
+The building (and optional installation) process is done via the [Meson build system](https://mesonbuild.com/index.html), version 1.5.0 is required. Meson does include
 a built-in pseudo-package manager called [WrapDB](https://mesonbuild.com/Wrapdb-projects.html) to download and compile dependencies, but this takes a very long time to complete. **We recommend these steps instead:**
 
 ### Dependencies
@@ -31,7 +60,7 @@ The application depends on the following shared libraries:
 - libcrypto
 - libcurl
 
-The easiest way to procure these libraries is to install the packages containing them through a package manager.
+A faster and easier way to procure these libraries is to install the packages containing them through a package manager.
 
 On Linux (Debian-based), run the following commands in the terminal:
 
@@ -40,13 +69,13 @@ On Linux (Debian-based), run the following commands in the terminal:
   sudo apt install -y libglib2.0-dev libgtk-4-dev libssl-dev libcurl4-openssl-dev
   ```
 
-On Windows, you can use [MSYS2](https://www.msys2.org/) get the packages. This example is for the UCRT64 environment:
+On Windows, you can use [MSYS2](https://www.msys2.org/) to get the packages. This example is for the UCRT64 environment:
 
 ```bash
 pacman -S mingw-w64-ucrt-x86_64-glib2 mingw-w64-ucrt-x86_64-gtk4 mingw-w64-ucrt-x86_64-openssl mingw-w64-ucrt-x86_64-curl
 ```
 
-### Build and Install
+### Compilation
 
 LFPCh can be built and installed on both OS families with Meson. After downloading and unpacking the source directory, enter the following into the terminal:
 
@@ -56,7 +85,8 @@ meson setup builddir
 meson install -C builddir
 ```
 
-On Linux, the app installs to the conventional Unix filesystem locations ('/usr/bin' and '/usr/share'), and can be run with the "lfpch" command. On Windows, the target directory for all files is 'C:\Tools\lfpch'.
+With the Meson install method, on Linux, the app installs to the conventional Unix filesystem locations ('/usr/bin' and '/usr/share'), and can be run with the "lfpch" command.
+On Windows, the target directory for all files is 'C:\Tools\lfpch'.
 
 ## Other
 

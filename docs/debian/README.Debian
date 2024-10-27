@@ -16,7 +16,7 @@ The application also includes a random password generator that creates a secure 
 customizable in accordance with the user's needs. The random generation
 is based on a "true" random seed provided by the x86 processor's DRNG unit.
 
-LFCh was written entirely in C with speed and efficiency in mind. Its simple,
+LFPCh was written entirely in C with speed and efficiency in mind. Its simple,
 GTK4 UI aims to provide a clean and easy-to-use interface.
 
  -- OperaVaria <lcs_it@proton.me>  Fri, 25 Oct 2024 18:42:35 +0200

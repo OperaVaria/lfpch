@@ -243,7 +243,7 @@ static void add_css_provider(GtkWidget *window) {
     GtkCssProvider *provider = gtk_css_provider_new ();
     // Different directories on Windows and Unix systems.
     #ifdef _WIN32
-        gtk_css_provider_load_from_file (provider, g_file_new_for_path ("./resources/styles.css"));
+        gtk_css_provider_load_from_file (provider, g_file_new_for_path ("c:/msys64/ucrt64/share/lfpch/styles.css"));
     #else
         gtk_css_provider_load_from_file (provider, g_file_new_for_path ("/usr/share/lfpch/styles.css"));
     #endif    
