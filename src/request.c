@@ -62,7 +62,7 @@ int curl_session(const char *url, const char *custom_header, Memory *memory_ptr)
 }
 
 /* Callback function for cURL to store response data, chunk-by-chunk,
-to dynamically allocated memory. Returns the number of elements (nmemb) received. */
+to dynamically allocated memory. Returns the byte size of the chunk received. */
 static size_t write_chunk_cb(void *data, size_t size, size_t nmemb, void *clientp) {
 
     // Initialize variables.
@@ -82,5 +82,5 @@ static size_t write_chunk_cb(void *data, size_t size, size_t nmemb, void *client
     mem->size += real_size;
     mem->string[mem->size] = '\0';
 
-    return nmemb;
+    return real_size;
 }
