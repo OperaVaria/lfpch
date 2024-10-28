@@ -42,8 +42,7 @@ void check_callback(GtkWidget *widget, gpointer data) {
         reset_result_widgets(widgets_ptr, "No password entered!");
     } else if (password.length > PASSWORD_MAX_LENGTH) {
         reset_result_widgets(widgets_ptr, "Password too long!");
-
-    } else { // Proceed normally.
+    } else { // Else: Proceed normally.
 
         // Call backend processes (strength and pwn check).
         password.strength_score = password_strength_check(password.input_data, password.length);

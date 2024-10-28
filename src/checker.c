@@ -9,10 +9,7 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 */
 
 // Header files.
- #include <ctype.h>
-// #include <stdio.h>
-// #include <stdlib.h>
-//#include <string.h>
+#include <ctype.h>
 #include "checker.h"
 #include "hashing.h"
 #include "macros.h"
