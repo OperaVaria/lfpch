@@ -4,7 +4,7 @@ LFPCh is a small, cross-platform GUI application to check if your password is sa
 In step one, the password's quality is evaluated based on its length and character variety. In step two, the app checks whether
 the password was part of an earlier data breach through the haveibeenpwned.com API. LFPCh provides an extra layer of security
 compared to using the website directly, as the password data never actually leaves the computer. Implementing a k-Anonymity model,
-only the first five characters of the password's sha1 hash is ever sent to the haveibeenpwned server, making its decoding impossible,
+only the first five characters of the password's SHA1 hash is ever sent to the haveibeenpwned server, making its decoding impossible,
 even if it is somehow intercepted. The application also includes a random password generator that creates a secure password, customizable
 in accordance with the user's needs. The random generation is based on a "true" random seed provided by the x86 processor's DRNG unit.
 
@@ -19,13 +19,13 @@ LFPCh was written entirely in C with speed and efficiency in mind. Its simple, G
 
 ## Installation
 
-The easiest and cleanest way to install LFPCh is via the binary packages located in the repository's "/bin" directory.
+The easiest and cleanest way to install LFPCh is via the binary packages located in the repository's '/bin' directory.
 These are set up to download and install the required dependencies automatically.
 
 ### Linux (Debian-based)
 
-Download the latest version of the .deb package from "/bin/Linux", and use you distribution's GUI package installer (e.g. GDebi, Deb Installer etc.),
-or run the following commands in the terminal:
+Download the latest version of the .deb package from '/bin/Linux', and use you distribution's GUI package installer
+(e.g. GDebi, Deb Installer etc.), or run the following commands in the terminal:
 
 ```bash
 cd /location/of/deb_file
@@ -48,8 +48,9 @@ The app can now be launched form the newly created desktop shortcut.
 
 ## Building
 
-The building (and optional installation) process is done via the [Meson build system](https://mesonbuild.com/index.html), version 1.5.0 is required. Meson does include
-a built-in pseudo-package manager called [WrapDB](https://mesonbuild.com/Wrapdb-projects.html) to download and compile dependencies, but this takes a very long time to complete. **We recommend these steps instead:**
+The building (and optional installation) process is done via the [Meson build system](https://mesonbuild.com/index.html),
+version 1.5.0 is required. Meson does include a built-in pseudo-package manager called [WrapDB](https://mesonbuild.com/Wrapdb-projects.html)
+to download and compile dependencies, but this takes a very long time to complete. **We recommend these steps instead:**
 
 ### Dependencies
 
@@ -77,7 +78,8 @@ pacman -S mingw-w64-ucrt-x86_64-glib2 mingw-w64-ucrt-x86_64-gtk4 mingw-w64-ucrt-
 
 ### Compilation
 
-LFPCh can be built and installed on both OS families with Meson. After downloading and unpacking the source directory, enter the following into the terminal:
+LFPCh can be built and installed on both OS families with Meson. After downloading and unpacking the source directory,
+enter the following into the terminal:
 
 ```bash
 cd /project/source/directory
@@ -85,7 +87,8 @@ meson setup builddir
 meson install -C builddir
 ```
 
-With the Meson install method, on Linux, the app installs to the conventional Unix filesystem locations ('/usr/bin' and '/usr/share'), and can be run with the "lfpch" command.
+With the Meson install method, on Linux, the app installs to the conventional Unix filesystem locations
+('/usr/bin' and '/usr/share'), and can be run with the "lfpch" command.
 On Windows, the target directory for all files is 'C:\Tools\lfpch'.
 
 ## Other
