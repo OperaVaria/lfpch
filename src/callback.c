@@ -17,6 +17,7 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 
 // Static function prototypes.
 static void reset_result_widgets(Widgets *widgets_ptr, const char *display_text);
+static void display_results(Widgets *widgets_ptr, Password *password_ptr);
 static const char *get_strength_color(int strength);
 static const char *get_strength_description(int strength);
 
@@ -27,7 +28,6 @@ void check_callback(GtkWidget *widget, gpointer data) {
     // Declare variables.
     Password password;
     Widgets *widgets_ptr;
-    char strength_msg_buff[128], pwn_msg_buff[128];
 
     // (Re)cast to Widgets struct.
     widgets_ptr = (Widgets *)data;
@@ -37,50 +37,21 @@ void check_callback(GtkWidget *widget, gpointer data) {
     password.length = strlen(password.input_data);
 
     /* Check if no password entered or password is too long.
-    Display warning to labels, reset strength bar, abort. */
+    If so: display warning to labels, reset strength bar, abort.
+    Else: proceed normally. */
     if (password.input_data[0] == '\0') {
         reset_result_widgets(widgets_ptr, "No password entered!");
     } else if (password.length > PASSWORD_MAX_LENGTH) {
         reset_result_widgets(widgets_ptr, "Password too long!");
-    } else { // Else: Proceed normally.
+    } else {
 
         // Call backend processes (strength and pwn check).
         password.strength_score = password_strength_check(password.input_data, password.length);
         password.pwn_num = pwn_check_process(&password);
 
-        /* DISPLAY RESULTS */
-
-        // Update strength bar.
-        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(widgets_ptr->strength_bar),
-                                      password.strength_score / 100.0);
-        gtk_widget_set_name(widgets_ptr->strength_bar,
-                            get_strength_color(password.strength_score));
-
-        // Update strength label.
-        snprintf(strength_msg_buff, sizeof(strength_msg_buff),
-                                           get_strength_description(password.strength_score));
-        gtk_label_set_text(GTK_LABEL(widgets_ptr->strength_label), strength_msg_buff);
-
-
-        // Create pwn result message based on result.
-        if (password.pwn_num != 0) {
-            /* The "'" format specifier (thousand separated number) does not work
-            on Windows, therefore it is not implemented in the pwn result message. */
-            #ifdef _WIN32
-                snprintf(pwn_msg_buff, sizeof(pwn_msg_buff),
-                         "Warning! This password has been breached at least %ld times!",
-                         password.pwn_num);
-            #else
-                snprintf(pwn_msg_buff, sizeof(pwn_msg_buff),
-                         "Warning! This password has been breached at least %'ld times!",
-                         password.pwn_num);
-            #endif
-        } else {
-            snprintf(pwn_msg_buff, sizeof(pwn_msg_buff), "Password is not known to be hacked!");
-        }
-
-        // Update pwn label.
-        gtk_label_set_text(GTK_LABEL(widgets_ptr->pwn_label), pwn_msg_buff);
+        // Display results with helper function.
+        display_results(widgets_ptr, &password);
+                
     }
 }
 
@@ -139,6 +110,46 @@ static void reset_result_widgets(Widgets *widgets_ptr, const char *display_text)
     gtk_label_set_text(GTK_LABEL(widgets_ptr->pwn_label), display_text);
     gtk_label_set_text(GTK_LABEL(widgets_ptr->strength_label),display_text);
     gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(widgets_ptr->strength_bar), 0.0);
+}
+
+/* Function to display the results of the check process on the proper widgets.
+Takes a pointer to a Widgets and a Password struct instance as arguments. */
+static void display_results(Widgets *widgets_ptr, Password *password_ptr) {
+
+    //Declare variables.    
+    char strength_msg_buff[128], pwn_msg_buff[128];
+
+    // Update strength bar.
+    gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(widgets_ptr->strength_bar),
+                                  password_ptr->strength_score / 100.0);
+    gtk_widget_set_name(widgets_ptr->strength_bar,
+                        get_strength_color(password_ptr->strength_score));
+
+    // Update strength label.
+    snprintf(strength_msg_buff, sizeof(strength_msg_buff),
+             get_strength_description(password_ptr->strength_score));
+    gtk_label_set_text(GTK_LABEL(widgets_ptr->strength_label), strength_msg_buff);
+
+
+    /* Create pwn result message based on result. The "'" format specifier
+    (thousand separated number) does not work on Windows, therefore it is
+    not implemented in the pwn result message. */
+    if (password_ptr->pwn_num != 0) {        
+        #ifdef _WIN32
+            snprintf(pwn_msg_buff, sizeof(pwn_msg_buff),
+                        "Warning! This password has been breached at least %ld times!",
+                        password_ptr->pwn_num);
+        #else
+            snprintf(pwn_msg_buff, sizeof(pwn_msg_buff),
+                        "Warning! This password has been breached at least %'ld times!",
+                        password_ptr->pwn_num);
+        #endif
+    } else {
+        snprintf(pwn_msg_buff, sizeof(pwn_msg_buff), "Password is not known to be hacked!");
+    }
+
+    // Update pwn label.
+    gtk_label_set_text(GTK_LABEL(widgets_ptr->pwn_label), pwn_msg_buff);
 }
 
 // Function to get color based on strength score.
