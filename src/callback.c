@@ -14,6 +14,7 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 #include "generator.h"
 #include "callback.h"
 #include "types.h"
+#include "security.h"
 
 // Static function prototypes.
 static void reset_result_widgets(Widgets *widgets_ptr, const char *display_text);
@@ -51,8 +52,11 @@ void check_callback(GtkWidget *widget, gpointer data) {
 
         // Display results with helper function.
         display_results(widgets_ptr, &password);
-                
+
     }
+
+    // Zero out password related data as a security measure.
+    clear_password_data(&password);
 }
 
 // Callback function when password generate button is clicked.
@@ -94,6 +98,9 @@ void generate_callback(GtkWidget *button, gpointer data) {
 
     // Reset result widgets to default.
     reset_result_widgets(widgets_ptr, "n/a");
+
+    // Zero out password related data as a security measure.
+    clear_password_data(&password);
 }
 
 // Callback function on window destroy: free memory allocated for widgets.
@@ -116,7 +123,7 @@ static void reset_result_widgets(Widgets *widgets_ptr, const char *display_text)
 Takes a pointer to a Widgets and a Password struct instance as arguments. */
 static void display_results(Widgets *widgets_ptr, Password *password_ptr) {
 
-    //Declare variables.    
+    //Declare variables.
     char strength_msg_buff[128], pwn_msg_buff[128];
 
     // Update strength bar.
@@ -134,7 +141,7 @@ static void display_results(Widgets *widgets_ptr, Password *password_ptr) {
     /* Create pwn result message based on result. The "'" format specifier
     (thousand separated number) does not work on Windows, therefore it is
     not implemented in the pwn result message. */
-    if (password_ptr->pwn_num != 0) {        
+    if (password_ptr->pwn_num != 0) {
         #ifdef _WIN32
             snprintf(pwn_msg_buff, sizeof(pwn_msg_buff),
                         "Warning! This password has been breached at least %ld times!",
