@@ -42,16 +42,22 @@ else
   desktop_dir = share_dir / 'applications'
 endif
 
+# Windows resource file compilation
+windows_rc = []
+if host_machine.system() == 'windows'
+  windows = import('windows')
+  windows_rc = windows.compile_resources('resources/lfpch.rc')
+endif
 
 # Executable
 executable('lfpch',
-           sources : src,
+           sources : src + windows_rc,
            include_directories: inc,
            link_args : ['-s'],
            dependencies : deps,
            win_subsystem : 'windows',
            install : true,
-           install_dir: bin_dir           
+           install_dir: bin_dir
            )
 
 # Install
