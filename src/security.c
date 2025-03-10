@@ -10,6 +10,7 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 
 // Header files.
 #include "security.h"
+#include "types.h"
 
 /* Zeroes the Password struct's character arrays,
 that hold password related data, for added security. */
