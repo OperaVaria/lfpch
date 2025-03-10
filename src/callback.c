@@ -10,9 +10,10 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 
 // Header files.
 #include <gtk/gtk.h>
+#include "callback.h"
 #include "checker.h"
 #include "generator.h"
-#include "callback.h"
+#include "macros.h"
 #include "types.h"
 #include "security.h"
 
@@ -138,19 +139,9 @@ static void display_results(Widgets *widgets_ptr, Password *password_ptr) {
     gtk_label_set_text(GTK_LABEL(widgets_ptr->strength_label), strength_msg_buff);
 
 
-    /* Create pwn result message based on result. The "'" format specifier
-    (thousand separated number) does not work on Windows, therefore it is
-    not implemented in the pwn result message. */
+    // Create pwn result message.
     if (password_ptr->pwn_num != 0) {
-        #ifdef _WIN32
-            snprintf(pwn_msg_buff, sizeof(pwn_msg_buff),
-                        "Warning! This password has been breached at least %ld times!",
-                        password_ptr->pwn_num);
-        #else
-            snprintf(pwn_msg_buff, sizeof(pwn_msg_buff),
-                        "Warning! This password has been breached at least %'ld times!",
-                        password_ptr->pwn_num);
-        #endif
+        snprintf(pwn_msg_buff, sizeof(pwn_msg_buff), PWN_RESULT_MESSAGE, password_ptr->pwn_num);
     } else {
         snprintf(pwn_msg_buff, sizeof(pwn_msg_buff), "Password is not known to be hacked!");
     }
