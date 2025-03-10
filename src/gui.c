@@ -188,10 +188,11 @@ static void create_password_generator_section(GtkWidget *vbox, Widgets *widgets)
     }
 
     /* Create dropdown menu to select password length.
-    Default value:  16 chars. */
+    Default value: recommended length. */
     length_dropdown = gtk_drop_down_new(G_LIST_MODEL(string_list), NULL);
     gtk_box_append(GTK_BOX(hbox), length_dropdown);
-    gtk_drop_down_set_selected(GTK_DROP_DOWN(length_dropdown), 16 - PASSWORD_MIN_LENGTH);
+    gtk_drop_down_set_selected(GTK_DROP_DOWN(length_dropdown),
+                               STRONG_PASSWORD_LENGTH - PASSWORD_MIN_LENGTH);
     gtk_widget_set_size_request(length_dropdown, 60, -1);
 
     // Create character type check buttons:
@@ -239,14 +240,9 @@ static void connect_signals(GtkWidget *window, Widgets *widgets) {
 
 // Connect a CSS file to display.
 static void add_css_provider(GtkWidget *window) {
-    GtkCssProvider *provider = gtk_css_provider_new ();
-    // Different directories on Windows and Unix systems.
-    #ifdef _WIN32
-        gtk_css_provider_load_from_file (provider, g_file_new_for_path ("c:/msys64/ucrt64/share/lfpch/styles.css"));
-    #else
-        gtk_css_provider_load_from_file (provider, g_file_new_for_path ("/usr/share/lfpch/styles.css"));
-    #endif    
-    gtk_style_context_add_provider_for_display (gtk_widget_get_display (window),
-                                                GTK_STYLE_PROVIDER (provider),
-                                                GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    GtkCssProvider *provider = gtk_css_provider_new();
+    gtk_css_provider_load_from_file(provider, g_file_new_for_path(CSS_FILE_PATH));
+    gtk_style_context_add_provider_for_display(gtk_widget_get_display(window),
+                                            GTK_STYLE_PROVIDER(provider),
+                                            GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 }
