@@ -5,8 +5,8 @@
 
 // Version Information
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION     0,0,1,0
-PRODUCTVERSION  0,0,1,0
+FILEVERSION     0,0,2,0
+PRODUCTVERSION  0,0,2,0
 FILEFLAGSMASK   VS_FFI_FILEFLAGSMASK
 FILEFLAGS       0
 FILEOS          VOS__WINDOWS32
@@ -18,13 +18,13 @@ BEGIN
         BLOCK "040904E4" // U.S. English, multilingual character set
         BEGIN
             VALUE "CompanyName",      "OperaVaria"
-            VALUE "FileDescription",  "Lightning-Fast Password Check"
-            VALUE "FileVersion",      "0.0.1"
+            VALUE "FileDescription",  "A simple GUI app to quickly and securely check if your password is safe."
+            VALUE "FileVersion",      "0.0.2"
             VALUE "InternalName",     "lfpch"
             VALUE "LegalCopyright",   "GPL-3.0-only"
             VALUE "OriginalFilename", "lfpch.exe"
             VALUE "ProductName",      "Lightning-Fast Password Check"
-            VALUE "ProductVersion",   "0.0.1"
+            VALUE "ProductVersion",   "0.0.2"
         END
     END
     BLOCK "VarFileInfo"
