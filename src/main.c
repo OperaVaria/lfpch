@@ -1,7 +1,7 @@
 /*
 
-Lightning-Fast Password Check v0.0.1
-2024/10/18
+Lightning-Fast Password Check v0.0.2
+2025/03/11
 By OperaVaria
 
 LFPCh is a small, cross-platform GUI application to check if your password is safe to use.
