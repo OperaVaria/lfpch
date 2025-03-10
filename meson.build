@@ -2,7 +2,7 @@
 
 # Project call
 project('lfpch', 'c',
-        version : '0.0.1',
+        version : '0.0.2',
         license : 'GPL-3.0-only',
         license_files : 'COPYING.md',
         default_options : ['buildtype=release', 'c_std=gnu17', 'c_args=-mrdseed']
@@ -43,15 +43,14 @@ else
 endif
 
 # Windows resource file compilation
-windows_rc = []
 if host_machine.system() == 'windows'
   windows = import('windows')
-  windows_rc = windows.compile_resources('resources/lfpch.rc')
+  src += windows.compile_resources('resources/lfpch.rc')
 endif
 
 # Executable
 executable('lfpch',
-           sources : src + windows_rc,
+           sources : src,
            include_directories: inc,
            link_args : ['-s'],
            dependencies : deps,
