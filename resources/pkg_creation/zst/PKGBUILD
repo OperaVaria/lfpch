@@ -1,0 +1,43 @@
+# Maintainer: OperaVaria <lcs_it@proton.me>
+_realname=lfpch
+pkgbase=mingw-w64-${_realname}
+pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
+pkgver=0.0.2
+pkgrel=1
+# epoch=
+pkgdesc="A simple GTK app to quickly and securely check if your password is safe."
+arch=('x86_64')
+mingw_arch=('clang64' 'mingw64' 'ucrt64')
+url="https://github.com/OperaVaria/lfpch"
+license=('spdx:GPL-3.0-only')
+# groups=()
+depends=("${MINGW_PACKAGE_PREFIX}-glib2>=2.80.4-1"
+         "${MINGW_PACKAGE_PREFIX}-gtk4>=4.14.4-1"
+         "${MINGW_PACKAGE_PREFIX}-openssl>=3.3.1-1"
+         "${MINGW_PACKAGE_PREFIX}-curl>=8.9.0-1"
+        )
+# makedepends=()
+# checkdepends=()
+# optdepends=()
+# provides=()
+# conflicts=()
+# replaces=()
+# backup=()
+# options=()
+install=lfpch.install
+changelog="${pkgdir}${MSYSTEM_PREFIX}/share/doc/lfpch/CHANGELOG.md"
+# source=("$pkgname-$pkgver.tar.gz"
+#        "$pkgname-$pkgver.patch")
+# noextract=()
+sha256sums=()
+# validpgpkeys=()
+
+# prepare()
+# build()
+# check()
+
+package() {
+  cp -a "${startdir}${MSYSTEM_PREFIX}/" "${pkgdir}"
+  cp -a "${startdir}${TMP}/" "${pkgdir}"
+}
+

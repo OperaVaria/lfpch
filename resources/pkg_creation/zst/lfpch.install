@@ -1,0 +1,22 @@
+# pre_install() {
+# }
+
+post_install() {	
+	powershell ".${TMP}/create_shortcut.ps1"
+	rm -f ".${TMP}/create_shortcut.ps1"
+}
+
+# pre_upgrade() {
+# }
+
+post_upgrade() {
+	powershell ".${TMP}/create_shortcut.ps1"
+	rm -f ".${TMP}/create_shortcut.ps1"
+}
+
+# pre_remove() {
+# }
+
+post_remove() {
+	rm -f "${USERPROFILE}/desktop/LFPCh.lnk"
+}

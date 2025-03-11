@@ -1,0 +1,6 @@
+#!/bin/bash -e
+
+# Make app bin runnable.
+
+chmod +x /usr/bin/lfpch
+

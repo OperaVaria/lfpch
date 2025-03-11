@@ -1,0 +1,13 @@
+5bc5f6e6a3e78968ef0532d19545e2b3  usr/bin/lfpch
+164c0b9a94e56232f535f63563433189  usr/share/applications/lfpch.desktop
+1235dfc7200af89116990420dd1e5171  usr/share/doc/lfpch/README.Debian
+85bd512a5d9d6db241118d2a20a365b1  usr/share/doc/lfpch/changelog.Debian.gz
+a13a80832d66ff32d76a599255d21fe8  usr/share/doc/lfpch/changelog.gz
+11c7f167cb754793b66d7dab0e502d78  usr/share/doc/lfpch/copyright
+230b6acfd51ffe3c45f9cb906330cf9d  usr/share/icons/hicolor/128x128/apps/lfpch.png
+e98145b2c3e615cd86917e473cb67996  usr/share/icons/hicolor/256x256/apps/lfpch.png
+ab94ce12b2458e9de44232acfa298a75  usr/share/icons/hicolor/48x48/apps/lfpch.png
+e1666adf4bbed81b331e2d39b8e8fb2b  usr/share/icons/hicolor/512x512/apps/lfpch.png
+615fcf085c4ac5ceedcb68d2277a0447  usr/share/icons/hicolor/64x64/apps/lfpch.png
+232be6f7d984e94f29ffa4d9222cf5fc  usr/share/icons/hicolor/scalable/apps/lfpch.svg
+f170270cc45d8546d4bd49cba9b1c815  usr/share/lfpch/styles.css

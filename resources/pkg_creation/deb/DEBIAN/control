@@ -1,0 +1,10 @@
+Package: lfpch
+Version: 0.0.2-1
+Architecture: amd64
+Maintainer: OperaVaria <lcs_it@proton.me>
+Homepage: https://github.com/OperaVaria/lfpch
+Section: utils
+Priority: optional
+Depends: libc6 (>= 2.34), libcurl4 (>= 7.16.2), libglib2.0-0 (>= 2.43.4), libgtk-4-1 (>= 4.0.0), libssl3 (>= 3.0.0)
+Description: Lightning-Fast Password Check
+ A simple GTK app to quickly and securely check if your password is safe.
