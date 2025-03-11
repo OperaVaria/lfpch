@@ -19,12 +19,12 @@ LFPCh was written entirely in C with speed and efficiency in mind. Its simple, G
 
 ## Installation
 
-The easiest and cleanest way to install LFPCh is via the binary packages located in the repository's '/bin' directory.
+The easiest and cleanest way to install LFPCh is via the binary packages located in the repository's ['bin/' directory](https://github.com/OperaVaria/lfpch/tree/main/bin).
 These are set up to download and install the required dependencies automatically.
 
 ### Linux (Debian-based)
 
-Download the latest version of the .deb package from '/bin/Linux', and use you distribution's GUI package installer
+Download the latest version of the .deb package from ['/bin/Linux'](https://github.com/OperaVaria/lfpch/tree/main/bin/Linux), and use you distribution's GUI package installer
 (e.g. GDebi, Deb Installer etc.), or run the following commands in the terminal:
 
 ```bash
@@ -37,7 +37,7 @@ The app can now be launched form the OS's application menu or by typing the "lfp
 ### Windows
 
 The Windows installation uses the [MSYS2](https://www.msys2.org/) platform with the UCRT64 environment to get the required dependencies.
-Download the latest version of the .pkg.tar.zst package from "/bin/Windows" and run the following commands in the MYSYS shell:
+Download the latest version of the .pkg.tar.zst package from ['/bin/Windows'](https://github.com/OperaVaria/lfpch/tree/main/bin/Windows) and run the following commands in the MYSYS shell:
 
 ```bash
 cd /location/of/pkg_file
