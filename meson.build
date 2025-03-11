@@ -8,7 +8,7 @@ project('lfpch', 'c',
         default_options : ['buildtype=release', 'c_std=gnu17', 'c_args=-mrdseed']
         )
 
-# Only build if the target CPU is x86:
+# Only build if the target CPU is x86
 is_x86 = host_machine.cpu_family().startswith('x86')
 if not is_x86
   error('This application currently only supports x86 architecture.')
@@ -42,10 +42,22 @@ else
   desktop_dir = share_dir / 'applications'
 endif
 
-# Windows resource file compilation
+# Windows-only steps
 if host_machine.system() == 'windows'
+  # Resource file compilation
   windows = import('windows')
   src += windows.compile_resources('resources/lfpch.rc')
+
+  # Set up Powershell script for shortcut creation
+  install_script = files('resources/create_shortcut.ps1')
+  install_path = bin_dir
+  meson.add_install_script('powershell', '-ExecutionPolicy', 'Bypass', '-File', 
+                           install_script, install_path)  
+endif
+
+
+if host_machine.system() == 'windows'
+  
 endif
 
 # Executable

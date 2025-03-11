@@ -27,9 +27,10 @@ Part of the "Lightning-Fast Password Check" project by OperaVaria.
 
 // Platform dependent strings.
 #ifdef _WIN32
-/*  NB. MYSYS2 UCRT64 path:
+/*  MYSYS2 UCRT64 CSS file path:
     #define CSS_FILE_PATH "c:/msys64/ucrt64/share/lfpch/styles.css" */
-    #define CSS_FILE_PATH "c:/Tools/lfpch/resources/styles.css"
+    // Default option: relative path.
+    #define CSS_FILE_PATH "./resources/styles.css"
     /* The "'" format specifier (thousand separated number) does not work on Windows,
     therefore it is not implemented in the pwn result message. */
     #define PWN_RESULT_MESSAGE "Warning! This password has been breached at least %ld times!"
